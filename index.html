@@ -185,6 +185,12 @@
     #outputText { font-size:0.85rem; color:var(--text-2); line-height:1.7; }
     #outputText strong { color:var(--text-1); font-weight:500; }
     .output-empty { font-size:0.83rem; color:var(--text-3); font-style:italic; }
+    .validated-narrative { font-size:0.87rem; color:var(--text-1); line-height:1.75; margin-bottom:16px; }
+    .validated-divider { height:1px; background:var(--border-soft); margin:16px 0; }
+    .validated-block { margin-bottom:14px; }
+    .validated-block-label { font-family:var(--font-ui); font-size:9px; letter-spacing:0.13em; text-transform:uppercase; color:var(--text-3); margin-bottom:4px; }
+    .validated-block-content { font-size:0.85rem; color:var(--text-2); line-height:1.65; }
+    .field-textarea.auto-resize { resize:none; overflow:hidden; }
 
     /* ── NEXT STEP ── */
     .next-step-card { background:var(--accent-dim2); border:1px solid rgba(212,240,100,0.18); border-radius:var(--radius-lg); padding:18px 22px; margin-bottom:24px; display:none; }
@@ -543,7 +549,7 @@
             <div class="field-group">
               <label class="field-label" for="f-initial">Problemática inicial <span class="field-required">*</span></label>
               <div class="field-hint">Describí brevemente la situación que te llevó a querer investigar. Los campos siguientes te van a ayudar a estructurarla.</div>
-              <textarea class="field-textarea" id="f-initial" rows="3" placeholder="Ej: Los usuarios abandonan el flujo de pago antes de completar la compra..." oninput="onFieldChange(this,'initial')" onblur="if(this.value.trim().length>10) evalField('initial')"></textarea>
+              <textarea class="field-textarea auto-resize" id="f-initial" rows="3" placeholder="Ej: Los usuarios abandonan el flujo de pago antes de completar la compra..." oninput="onFieldChange(this,'initial');autoResize(this)" onblur="if(this.value.trim().length>10) evalField('initial')"></textarea>
               <div class="field-feedback" id="fb-initial"></div>
               <div class="field-actions">
                 <button class="field-coach-btn" onclick="evalField('initial')">◈ Evaluar</button>
@@ -555,7 +561,7 @@
             <div class="field-group">
               <label class="field-label" for="f-user">Usuario afectado <span class="field-required">*</span></label>
               <div class="field-hint">No "usuarios" — quién exactamente, con qué características o contexto.</div>
-              <input class="field-input" id="f-user" type="text" placeholder="Ej: Clientes activos con plan Premium que ya activaron su cuenta..." oninput="onFieldChange(this,'user')" onblur="if(this.value.trim().length>10) evalField('user')" />
+              <textarea class="field-textarea auto-resize" id="f-user" rows="2" placeholder="Ej: Clientes activos con plan Premium que ya activaron su cuenta..." oninput="onFieldChange(this,'user');autoResize(this)" onblur="if(this.value.trim().length>10) evalField('user')"></textarea>
               <div class="field-feedback" id="fb-user"></div>
               <div class="field-actions">
                 <button class="field-coach-btn" onclick="evalField('user')">◈ Evaluar</button>
@@ -567,7 +573,7 @@
             <div class="field-group">
               <label class="field-label" for="f-what">¿Qué sucede? <span class="field-required">*</span></label>
               <div class="field-hint">Describí la situación en conflicto objetivamente, sin juicio ni suposiciones.</div>
-              <textarea class="field-textarea" id="f-what" rows="3" placeholder="Ej: Los usuarios no completan el paso 3 del flujo y abandonan sin mensaje de error visible..." oninput="onFieldChange(this,'what')" onblur="if(this.value.trim().length>10) evalField('what')"></textarea>
+              <textarea class="field-textarea auto-resize" id="f-what" rows="3" placeholder="Ej: Los usuarios no completan el paso 3 del flujo y abandonan sin mensaje de error visible..." oninput="onFieldChange(this,'what');autoResize(this)" onblur="if(this.value.trim().length>10) evalField('what')"></textarea>
               <div class="field-feedback" id="fb-what"></div>
               <div class="field-actions">
                 <button class="field-coach-btn" onclick="evalField('what')">◈ Evaluar</button>
@@ -579,7 +585,7 @@
             <div class="field-group">
               <label class="field-label" for="f-context">Contexto <span class="field-required">*</span></label>
               <div class="field-hint">¿Cuándo y dónde ocurre? Canal, paso del flujo, momento del journey.</div>
-              <input class="field-input" id="f-context" type="text" placeholder="Ej: Durante el flujo de onboarding en mobile, paso 2 de 4..." oninput="onFieldChange(this,'context')" onblur="if(this.value.trim().length>8) evalField('context')" />
+              <textarea class="field-textarea auto-resize" id="f-context" rows="2" placeholder="Ej: Durante el flujo de onboarding en mobile, paso 2 de 4..." oninput="onFieldChange(this,'context');autoResize(this)" onblur="if(this.value.trim().length>8) evalField('context')"></textarea>
               <div class="field-feedback" id="fb-context"></div>
               <div class="field-actions">
                 <button class="field-coach-btn" onclick="evalField('context')">◈ Evaluar</button>
@@ -591,7 +597,7 @@
             <div class="field-group">
               <label class="field-label" for="f-cause">Causa o hipótesis <span class="field-required">*</span></label>
               <div class="field-hint">¿Qué creés que puede estar pasando? Si no está validado, escribilo explícitamente como hipótesis: <em>"Podría deberse a…"</em> o <em>"Posiblemente…"</em>. No confundir con evidencia.</div>
-              <textarea class="field-textarea" id="f-cause" rows="3" placeholder="Ej: Posiblemente hay fricción en la comprensión del formulario de datos bancarios..." oninput="onFieldChange(this,'cause')" onblur="if(this.value.trim().length>10) evalField('cause')"></textarea>
+              <textarea class="field-textarea auto-resize" id="f-cause" rows="3" placeholder="Ej: Posiblemente hay fricción en la comprensión del formulario de datos bancarios..." oninput="onFieldChange(this,'cause');autoResize(this)" onblur="if(this.value.trim().length>10) evalField('cause')"></textarea>
               <div class="field-feedback" id="fb-cause"></div>
               <div class="field-actions">
                 <button class="field-coach-btn" onclick="evalField('cause')">◈ Evaluar</button>
@@ -603,7 +609,7 @@
             <div class="field-group">
               <label class="field-label" for="f-impact">Impacto del problema <span class="field-required">*</span></label>
               <div class="field-hint">¿Qué consecuencias concretas tiene para el negocio o el usuario? Evitá frases como "baja conversión" sin contexto.</div>
-              <textarea class="field-textarea" id="f-impact" rows="2" placeholder="Ej: Se mantiene la carga operativa del call center y la app no cumple su rol de autogestión..." oninput="onFieldChange(this,'impact')" onblur="if(this.value.trim().length>10) evalField('impact')"></textarea>
+              <textarea class="field-textarea auto-resize" id="f-impact" rows="2" placeholder="Ej: Se mantiene la carga operativa del call center y la app no cumple su rol de autogestión..." oninput="onFieldChange(this,'impact');autoResize(this)" onblur="if(this.value.trim().length>10) evalField('impact')"></textarea>
               <div class="field-feedback" id="fb-impact"></div>
               <div class="field-actions">
                 <button class="field-coach-btn" onclick="evalField('impact')">◈ Evaluar</button>
@@ -615,7 +621,7 @@
             <div class="field-group">
               <label class="field-label" for="f-evidence">Evidencia <span class="field-required">*</span></label>
               <div class="field-hint">¿Qué datos, señales o fuentes sostienen que este problema <em>existe</em>? Acá van hechos observables, no suposiciones. Las hipótesis van en el campo anterior.</div>
-              <textarea class="field-textarea" id="f-evidence" rows="2" placeholder="Ej: NPS bajo en onboarding (Q3), grabaciones Fullstory, 40% de tickets de soporte por este motivo..." oninput="onFieldChange(this,'evidence')" onblur="if(this.value.trim().length>10) evalField('evidence')"></textarea>
+              <textarea class="field-textarea auto-resize" id="f-evidence" rows="2" placeholder="Ej: NPS bajo en onboarding (Q3), grabaciones Fullstory, 40% de tickets de soporte por este motivo..." oninput="onFieldChange(this,'evidence');autoResize(this)" onblur="if(this.value.trim().length>10) evalField('evidence')"></textarea>
               <div class="field-feedback" id="fb-evidence"></div>
               <div class="field-actions">
                 <button class="field-coach-btn" onclick="evalField('evidence')">◈ Evaluar</button>
@@ -1844,42 +1850,30 @@
        La función debe devolver el objeto estructurado abajo.
     ============================================================ */
     async function getAIFeedback(moduleId, answers) {
-      try {
-        const systemPrompt = `Sos un coach de UX research metodológico. Evaluás briefs de investigación UX.
+      const systemPrompt = `Sos un coach de UX research metodológico. Evaluás briefs de investigación UX.
 Respondé SOLO con JSON válido, sin backticks ni texto extra, con exactamente esta estructura:
-{ "status":"validado", "diagnosis":"...", "missing":["..."], "suggestions":["..."], "improvedVersion":"...", "nextQuestion":"..." }
-Los valores de status son: "validado" o "necesita_mejora".
-No inventés datos. Tono directo, constructivo, en español rioplatense.`;
-        const prompt = `Evaluá este brief del Módulo ${moduleId}:\n${JSON.stringify(answers, null, 2)}`;
-        const resp = await fetch('/.netlify/functions/coach', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt, systemPrompt })
-        });
-        if (!resp.ok) return null;
-        const data = await resp.json();
-        if (data.raw || data.error) return null;
-        return data;
-      } catch { return null; }
+{ "status":"validado"|"necesita_mejora", "diagnosis":"diagnóstico específico y concreto basado en lo escrito", "missing":["ítem faltante 1","ítem faltante 2"], "suggestions":["sugerencia accionable 1","sugerencia accionable 2"], "nextQuestion":"pregunta de seguimiento concreta" }
+Reglas: analizá cada campo individualmente. El diagnóstico debe mencionar qué campos están bien y cuáles son débiles. No inventés datos. Tono directo, en español rioplatense.`;
+      const prompt = `Evaluá este brief del Módulo ${moduleId}. Analizá: si el usuario está bien definido (con segmento/condición observable), si la situación es observable, si el contexto ubica el momento del journey, si la causa está como hipótesis, si el impacto conecta con negocio, si la evidencia son hechos (no hipótesis).\n${JSON.stringify(answers, null, 2)}`;
+      return await fetchCoach({ prompt, systemPrompt });
     }
 
     async function getFieldAIFeedback(moduleId, fieldKey, value, allAnswers) {
-      try {
-        const systemPrompt = `Sos un coach de UX research. Evaluás un campo específico de un brief.
+      const fieldCtx = {
+        user:     'Evaluá si el usuario está bien definido: debe tener segmento, condición observable o comportamiento. "Usuarios" o "clientes" solos son genéricos.',
+        what:     'Evaluá si describe el comportamiento observable sin mezclar causas ni interpretaciones. Debe decir qué hace o no hace el usuario, en qué paso.',
+        context:  'Evaluá si ubica claramente el momento del journey: canal, paso del flujo, pantalla o momento.',
+        cause:    'Evaluá si está formulado como hipótesis (Posiblemente/Podría deberse a) y no como certeza. Alertá si hay datos mezclados que deberían ir en Evidencia.',
+        impact:   'Evaluá si conecta con consecuencias concretas de negocio o experiencia. "Baja conversión" sin contexto es genérico.',
+        evidence: 'Evaluá si son hechos observables (datos, métricas, fuentes) y no hipótesis. Si hay suposiciones, alertar que van en Causa.',
+        initial:  'Evaluá si introduce la problemática con suficiente especificidad: quién, qué situación, dónde.',
+      };
+      const systemPrompt = `Sos un coach de UX research. Evaluás un campo específico de un brief de investigación UX.
 Respondé SOLO con JSON válido, sin backticks ni texto extra:
-{ "status":"ok"|"mejorable"|"generico"|"supuesto", "diagnosis":"...", "improve":"...", "question":"...", "suggestion":"..." }
-Reglas: no inventés datos. Ayudá a mejorar la formulación sin completarla. Español rioplatense, tono directo.`;
-        const prompt = `Campo: "${fieldKey}"\nValor: "${value}"\nContexto:\n${JSON.stringify(allAnswers, null, 2)}`;
-        const resp = await fetch('/.netlify/functions/coach', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt, systemPrompt })
-        });
-        if (!resp.ok) return null;
-        const data = await resp.json();
-        if (data.raw || data.error) return null;
-        return data;
-      } catch { return null; }
+{ "status":"ok"|"mejorable"|"generico"|"supuesto", "diagnosis":"diagnóstico específico y breve de este campo en particular", "improve":"qué mejorar concretamente", "question":"pregunta de seguimiento concreta", "suggestion":"versión mejorada si podés sugerirla sin inventar datos, o null" }
+Español rioplatense, tono directo. No inventés información. Si el texto es vago, decilo claramente.`;
+      const prompt = `${fieldCtx[fieldKey] || 'Evaluá este campo.'}\n\nCampo evaluado: "${fieldKey}"\nValor: "${value}"\nContexto completo del brief:\n${JSON.stringify(allAnswers, null, 2)}`;
+      return await fetchCoach({ prompt, systemPrompt });
     }
 
     /* ============================================================
@@ -2175,11 +2169,25 @@ Reglas: no inventés datos. Ayudá a mejorar la formulación sin completarla. Es
        Al conectar AI real: reemplazar buildFieldImprovement con llamada.
     ============================================================ */
     async function getFieldImprovementAI(key, value, allAnswers) {
-      // FUTURE: llamada AI por campo para mejora contextual
-      // System: "Mejorá la redacción del campo sin inventar información.
-      //          Usá solo los datos proporcionados. Devuelve JSON:
-      //          { improved: '...', note: '...' }"
-      return null;
+      if (!value.trim()) return null;
+      const fieldInstructions = {
+        user:     'Campo "Usuario afectado". Hacelo más específico: condición, segmento, comportamiento observable. Sin inventar datos.',
+        what:     'Campo "¿Qué sucede?". Mejorá la descripción del comportamiento observable. Eliminá interpretaciones o causas mezcladas. Sin inventar datos.',
+        context:  'Campo "Contexto". Hacé que indique claramente el momento del journey, canal y paso del flujo. Sin inventar datos.',
+        cause:    'Campo "Causa o hipótesis". Asegurate que esté como hipótesis (Posiblemente/Podría deberse a). Si es una lista, mantené el formato lista. Sin inventar datos.',
+        impact:   'Campo "Impacto". Conectalo con consecuencias concretas de negocio o experiencia. Sin inventar datos.',
+        evidence: 'Campo "Evidencia". Asegurate que sean hechos observables. Listá fuentes claramente. Sin inventar datos.',
+        initial:  'Campo "Problemática inicial". Hacelo más específico: quién, qué, dónde. Sin inventar datos.',
+      };
+      const systemPrompt = `Sos un coach de UX research. Mejorás la redacción de un campo de un brief.
+REGLAS CRÍTICAS:
+- NO inventés información nueva. Solo restructurá y clarificá lo que ya está escrito.
+- Si el texto es tan vago que no se puede mejorar sin inventar, devolvé improved:null y explicá qué falta.
+- Si podés mejorar aunque sea parcialmente, hacelo.
+- Tono directo, español rioplatense.
+- Devolvé SOLO JSON válido sin backticks: { "improved": "texto mejorado" o null, "note": "qué cambió o qué falta" }`;
+      const prompt = `${fieldInstructions[key] || 'Mejorá la redacción de este campo.'}\n\nValor actual: "${value}"\n\nContexto del brief completo:\n${JSON.stringify(allAnswers, null, 2)}`;
+      return await fetchCoach({ prompt, systemPrompt });
     }
 
     function buildFieldImprovement(key, val, ctx) {
@@ -2596,6 +2604,32 @@ Reglas: no inventés datos. Ayudá a mejorar la formulación sin completarla. Es
     function gv(id) { const el=document.getElementById(id); return el?el.value.trim():''; }
     function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.max(el.scrollHeight, 60) + 'px';
+    }
+
+    function autoResizeAll() {
+      document.querySelectorAll('.field-textarea.auto-resize').forEach(el => autoResize(el));
+    }
+
+    async function fetchCoach(payload, timeoutMs=10000) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const resp = await fetch('/.netlify/functions/coach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: ctrl.signal
+        });
+        clearTimeout(timer);
+        if (!resp.ok) return null;
+        const data = await resp.json();
+        return (data.raw || data.error) ? null : data;
+      } catch { clearTimeout(timer); return null; }
+    }
+
     function updateOutput() {
       const user=gv('f-user'), what=gv('f-what'), ctx=gv('f-context');
       const cause=gv('f-cause'), impact=gv('f-impact'), ev=gv('f-evidence'), init=gv('f-initial');
@@ -2609,26 +2643,35 @@ Reglas: no inventés datos. Ayudá a mejorar la formulación sin completarla. Es
         return;
       }
 
+      const block = (label, content) => content
+        ? `<div class="validated-block"><div class="validated-block-label">${label}</div><div class="validated-block-content">${esc(content)}</div></div>`
+        : '';
+
       let html = '';
 
-      // — Problema validado —
       if (user && what) {
+        // Formato narrativo
         const ctxStr = ctx ? ` en ${ctx.toLowerCase()}` : '';
         const causeStr = cause ? ` Esto podría estar ocurriendo porque ${cause.charAt(0).toLowerCase()+cause.slice(1).replace(/\.$/,'')}.` : '';
         const impactStr = impact ? ` Como consecuencia, ${impact.charAt(0).toLowerCase()+impact.slice(1).replace(/\.$/,'')}.` : '';
-        html += `<div style="margin-bottom:14px;"><div style="font-family:var(--font-ui);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Problema validado</div>`;
-        html += `<p style="font-size:0.87rem;color:var(--text-1);line-height:1.7;">${esc(user)} ${esc(what)}${esc(ctxStr)}.${esc(causeStr)}${esc(impactStr)}</p></div>`;
+        html += `<div class="validated-narrative">${esc(user)} ${esc(what)}${esc(ctxStr)}.${esc(causeStr)}${esc(impactStr)}</div>`;
+        html += `<div class="validated-divider"></div>`;
+        // Formato metodológico en bloques
+        html += block('Qué sucede', what);
+        html += block('Por qué sucede', cause);
+        html += block('Qué provoca', impact);
+        html += block('Dónde lo observamos', ev);
+        html += block('Contexto', ctx);
+        html += block('Usuario afectado', user);
       } else if (init) {
-        html += `<div style="margin-bottom:14px;"><div style="font-family:var(--font-ui);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Situación inicial</div><p style="font-size:0.87rem;color:var(--text-2);line-height:1.7;">${esc(init)}</p></div>`;
-      }
-
-      // — Evidencia —
-      if (ev) {
-        html += `<div style="margin-bottom:6px;"><div style="font-family:var(--font-ui);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:5px;">Evidencia disponible</div><p style="font-size:0.83rem;color:var(--text-2);line-height:1.6;">${esc(ev)}</p></div>`;
+        html += block('Situación inicial', init);
       }
 
       el.innerHTML = html;
       if(note) note.style.display = (cause && user && what) ? 'block' : 'none';
+
+      // Actualizar resumen M2
+      if (user && what) refreshM2Summary();
     }
 
     /* ============================================================
@@ -2671,29 +2714,32 @@ Reglas: no inventés datos. Ayudá a mejorar la formulación sin completarla. Es
         suggestions.push('Indicá el canal, paso del flujo o momento del journey: "en el paso 3 de alta, mobile".');
       }
 
+      const weakFields = Object.entries(scores).filter(([k,v])=>v<1).map(([k])=>k);
+      const strongFields = Object.entries(scores).filter(([k,v])=>v>=1).map(([k])=>k);
+
+      const fieldLabels = { initial:'problemática inicial', user:'usuario afectado', what:'qué sucede',
+        context:'contexto', cause:'causa/hipótesis', impact:'impacto', evidence:'evidencia' };
+
       let diagnosis='';
       if (ok===7) {
-        diagnosis='El problema cumple todos los criterios metodológicos del brief. Podés avanzar al Módulo 2.';
-      } else if (ok>=4) {
-        diagnosis=`Buen avance: ${ok} de 7 criterios completos. El coach detectó ${missing.length} aspecto(s) a reforzar.`;
+        diagnosis='El problema está completo metodológicamente. Todos los campos tienen contenido de calidad. Podés avanzar al Módulo 2.';
+      } else if (ok>=5) {
+        const debiles = weakFields.map(k=>fieldLabels[k]||k).join(', ');
+        diagnosis=`Buen avance: ${ok} de 7 campos completos. Reforzá: ${debiles}.`;
+      } else if (ok>=2) {
+        const fuertes = strongFields.map(k=>fieldLabels[k]||k).join(' y ');
+        diagnosis=`Tenés ${fuertes} bien definidos. Completá los ${7-ok} campos restantes para tener un brief sólido.`;
       } else {
-        diagnosis=`El brief todavía está incompleto. Hay ${missing.length} aspecto(s) críticos sin resolver.`;
-      }
-
-      let improvedVersion=null;
-      if (user&&what&&scores['user']>=0.65&&scores['what']>=0.65) {
-        const c2=cause?` Hipótesis de causa: ${cause.charAt(0).toLowerCase()+cause.slice(1)}.`:'';
-        const i2=impact?` Impacto: ${impact.toLowerCase()}.`:'';
-        const e2=evidence?` Evidencia: ${evidence}.`:'';
-        const ctx2=context?`, durante ${context.toLowerCase()}`:'';
-        improvedVersion=`${user} ${what}${ctx2}.${c2}${i2}${e2}`;
+        diagnosis=`Hay ${filled} campo(s) con contenido pero el brief está incompleto. Completá especialmente usuario, qué sucede y contexto.`;
       }
 
       const nextQ = ok===7
-        ? '¿Qué es exactamente lo que necesitás aprender con esta investigación? ¿Qué pregunta respondería el estudio?'
-        : (missing.length>0 ? '¿Cuál es la consecuencia concreta más importante de este problema para el negocio?' : '¿Tenés datos cuantitativos que respalden la magnitud del problema?');
+        ? '¿Qué necesitás aprender exactamente con esta investigación? ¿Qué decisión de diseño o negocio va a responder el estudio?'
+        : (weakFields.includes('cause') ? '¿Qué hipótesis tiene el equipo sobre por qué ocurre este problema?' :
+           weakFields.includes('evidence') ? '¿Hay algún dato, grabación o ticket que muestre que este problema existe?' :
+           '¿Cuál es la consecuencia concreta más importante de este problema para el negocio?');
 
-      return { status: ok===7?'validado':'necesita_mejora', diagnosis, missing, suggestions, improvedVersion, nextQuestion:nextQ };
+      return { status: ok===7?'validado':'necesita_mejora', diagnosis, missing, suggestions, nextQuestion:nextQ };
     }
 
     /* ============================================================
@@ -2881,20 +2927,20 @@ _Brief generado con UX Research Coach_
     ============================================================ */
     function loadExample() {
       const ex = {
-        'f-initial':'Clientes activos de una empresa de salud siguen llamando al call center para reservar hora, aunque tienen la app instalada y podrían autogestionar la reserva.',
-        'f-user':'Clientes activos con cobertura ambulatoria vigente, con la app instalada y cuenta activada.',
-        'f-what':'Siguen llamando al call center para reservar hora médica en lugar de completar la gestión desde la app.',
-        'f-context':'Durante el flujo de agenda de hora en la app, sección "Mis médicos", paso de selección de horario.',
-        'f-cause':'Posiblemente encuentran fricciones de comprensión, confianza en la disponibilidad real de horarios, o usabilidad durante el proceso de agendamiento.',
-        'f-impact':'Se mantiene la carga operativa del call center, baja la adopción digital y la app no cumple su objetivo de autogestión.',
-        'f-evidence':'Llamados por reserva de hora se mantienen estables respecto al año anterior (CRM). NPS bajo en flujo de agenda. Fullstory muestra abandono alto en paso de selección de horario.',
+        'f-initial':'Usuarios descargan la app de Pinta Libre, pero no avanzan hacia la suscripción ni utilizan los beneficios disponibles. Esto genera una brecha entre el interés inicial por la propuesta y la activación real del servicio.',
+        'f-user':'Personas que descargaron la app de Pinta Libre, pero no iniciaron una suscripción ni realizaron usos de beneficios.',
+        'f-what':'Descargan la app, pero no completan el proceso de suscripción ni activan el uso de beneficios en locales gastronómicos.',
+        'f-context':'Durante la etapa posterior a la descarga de la app, especialmente en el momento de entender la propuesta de valor, decidir si suscribirse y realizar el primer uso.',
+        'f-cause':'Podría deberse a falta de claridad sobre cómo funciona el beneficio, dudas sobre el valor real de la suscripción, desconfianza al ingresar la tarjeta o falta de contexto de uso inmediato al momento de descargar la app.',
+        'f-impact':'Baja conversión de descargas a suscripciones, menor activación de usuarios, menor uso de beneficios y dificultad para demostrar el valor recurrente de Pinta Libre.',
+        'f-evidence':'Descargas de la app que no se convierten en suscripciones, usuarios registrados sin uso de beneficios, baja activación posterior a la descarga y señales cualitativas de confusión sobre cómo funciona la propuesta.',
       };
       Object.entries(ex).forEach(([id,val])=>{
         const el=document.getElementById(id);
-        if(el){el.value=val; onFieldChange(el,id.replace('f-',''),true);}
+        if(el){el.value=val; onFieldChange(el,id.replace('f-',''),true); if(el.classList.contains('auto-resize')) autoResize(el);}
       });
       scheduleCoach();
-      showToast('✦ Ejemplo cargado');
+      showToast('✦ Ejemplo Pinta Libre cargado');
     }
 
     /* ============================================================
@@ -2903,7 +2949,7 @@ _Brief generado con UX Research Coach_
     function clearAll() {
       ['initial','user','what','context','cause','impact','evidence'].forEach(f=>{
         const el=document.getElementById('f-'+f);
-        if(el){el.value='';el.className=el.tagName==='TEXTAREA'?'field-textarea':'field-input';}
+        if(el){const ar=el.classList.contains('auto-resize');el.value='';el.className=(el.tagName==='TEXTAREA'?'field-textarea':'field-input')+(ar?' auto-resize':'');if(ar)autoResize(el);}
         const fb=document.getElementById('fb-'+f);
         if(fb){fb.className='field-feedback';fb.textContent='';}
         scores[f]=0;
@@ -7008,7 +7054,7 @@ _Brief generado con UX Research Coach_
     /* ============================================================
        INIT
     ============================================================ */
-    document.addEventListener('DOMContentLoaded', () => { load(); loadM2(); loadM3(); loadM4(); loadM5(); loadM6(); loadM7(); loadM8(); loadM9(); loadM10(); applyResearchMethod(); });
+    document.addEventListener('DOMContentLoaded', () => { load(); loadM2(); loadM3(); loadM4(); loadM5(); loadM6(); loadM7(); loadM8(); loadM9(); loadM10(); applyResearchMethod(); autoResizeAll(); });
   </script>
 </body>
 </html>
