@@ -509,6 +509,9 @@
         </div>
         <div class="topbar-actions" id="topbarActions">
           <button class="btn btn-ghost" id="btnExample" onclick="runModuleExample()">✦ Ejemplo</button>
+          <button class="btn btn-ghost" id="btnBriefExport" onclick="exportBrief()" title="Descargar todo el brief como .json">⇩ Backup</button>
+          <button class="btn btn-ghost" id="btnBriefImport" onclick="document.getElementById('briefImportInput').click()" title="Restaurar brief desde .json">⇪ Restaurar</button>
+          <input type="file" id="briefImportInput" accept="application/json,.json" style="display:none" onchange="importBrief(event)" />
           <button class="btn btn-outline" id="btnExport" onclick="exportMarkdown()" style="display:none">↓ .md</button>
           <button class="btn btn-primary" id="btnNext" onclick="runModuleNext()" disabled>Módulo 2 →</button>
         </div>
@@ -2628,6 +2631,93 @@ REGLAS CRÍTICAS:
         const data = await resp.json();
         return (data.raw || data.error) ? null : data;
       } catch { clearTimeout(timer); return null; }
+    }
+
+    /* ============================================================
+       BRIEF EXPORT / IMPORT
+       Backup completo a JSON y restauración. Trabaja con todas las
+       keys de localStorage con prefijo ux_rc_.
+    ============================================================ */
+    const BRIEF_STORAGE_PREFIX = 'ux_rc_';
+    const BRIEF_EXPORT_VERSION = 1;
+
+    function collectBriefData() {
+      const data = {};
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith(BRIEF_STORAGE_PREFIX)) {
+          data[k] = localStorage.getItem(k);
+        }
+      }
+      return data;
+    }
+
+    function exportBrief() {
+      try {
+        const payload = {
+          app: 'ux-research-coach',
+          version: BRIEF_EXPORT_VERSION,
+          exportedAt: new Date().toISOString(),
+          data: collectBriefData()
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        a.href = url;
+        a.download = `ux-research-brief-${stamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('No se pudo exportar el brief: ' + (err?.message || err));
+      }
+    }
+
+    function importBrief(event) {
+      const file = event?.target?.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!parsed || parsed.app !== 'ux-research-coach' || !parsed.data || typeof parsed.data !== 'object') {
+            throw new Error('Archivo inválido: no parece un backup de UX Research Coach.');
+          }
+          if (parsed.version && parsed.version > BRIEF_EXPORT_VERSION) {
+            if (!confirm('Este backup fue generado por una versión más nueva. ¿Importar igual?')) return;
+          }
+          const exportedAt = parsed.exportedAt ? new Date(parsed.exportedAt).toLocaleString() : 'fecha desconocida';
+          const keyCount = Object.keys(parsed.data).length;
+          if (!confirm(`Vas a reemplazar el brief actual por el backup del ${exportedAt} (${keyCount} keys). ¿Continuar?`)) return;
+
+          // Borrar solo las keys del brief, no toda la storage
+          const toRemove = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith(BRIEF_STORAGE_PREFIX)) toRemove.push(k);
+          }
+          toRemove.forEach(k => localStorage.removeItem(k));
+
+          // Escribir las nuevas
+          Object.entries(parsed.data).forEach(([k, v]) => {
+            if (k.startsWith(BRIEF_STORAGE_PREFIX) && typeof v === 'string') {
+              localStorage.setItem(k, v);
+            }
+          });
+
+          alert('Brief restaurado. La página se va a recargar.');
+          location.reload();
+        } catch (err) {
+          alert('No se pudo importar el archivo: ' + (err?.message || err));
+        } finally {
+          // Limpiar el input para que se pueda volver a importar el mismo archivo
+          if (event?.target) event.target.value = '';
+        }
+      };
+      reader.onerror = () => alert('Error leyendo el archivo.');
+      reader.readAsText(file);
     }
 
     function updateOutput() {
