@@ -1344,6 +1344,21 @@
                 <button class="btn btn-ghost" onclick="clearM7()" style="font-size:9px;padding:6px 12px;">↺ Limpiar módulo</button>
                 <span style="font-size:0.7rem;color:var(--text-3);font-style:italic;">Caso: empresa de salud · autogestión de reservas</span>
               </div>
+
+              <details style="margin-top:16px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;">
+                <summary style="cursor:pointer;font-family:var(--font-ui);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--coach);">◈ 7 sesgos cognitivos a evitar al construir preguntas</summary>
+                <p style="font-size:0.78rem;color:var(--text-2);margin-top:10px;line-height:1.55;">El coach revisa tus preguntas contra estos sesgos. Si los detecta, los marca con <code style="background:var(--coach-dim);padding:1px 6px;border-radius:3px;color:var(--coach);">[sesgo]</code> en el feedback.</p>
+                <ol style="margin-top:12px;padding-left:18px;font-size:0.78rem;color:var(--text-2);line-height:1.65;">
+                  <li><strong style="color:var(--text-1);">Heurística del afecto.</strong> Responder "cómo me siento" en lugar de "qué pienso". <em style="color:var(--text-3);">Solución: tercera persona, parámetro funcional.</em></li>
+                  <li><strong style="color:var(--text-1);">Sesgo de confirmación.</strong> Asumir contexto del usuario o que la solución le sirvió. <em style="color:var(--text-3);">Solución: no asumir, dejar que el usuario nombre lo que ve.</em></li>
+                  <li><strong style="color:var(--text-1);">Efecto ancla.</strong> Un valor previo fija la respuesta. <em style="color:var(--text-3);">Solución: escalas con descriptores neutros mapeados al parámetro.</em></li>
+                  <li><strong style="color:var(--text-1);">Heurística de disponibilidad.</strong> Frecuencia juzgada por facilidad de recuerdo. <em style="color:var(--text-3);">Solución: validar frecuencias con datos, no solo auto-reporte.</em></li>
+                  <li><strong style="color:var(--text-1);">Sesgo de representatividad.</strong> Atribuir por similitud, no por estadística. <em style="color:var(--text-3);">Solución: evitar perfilamiento no relacionado al uso del producto.</em></li>
+                  <li><strong style="color:var(--text-1);">Efecto halo.</strong> Atributos por percepción parcial (estética → funcional). <em style="color:var(--text-3);">Solución: parámetro funcional concreto, no estético.</em></li>
+                  <li><strong style="color:var(--text-1);">Sesgo de proyección.</strong> Predecir comportamiento futuro. <em style="color:var(--text-3);">Solución: A/B testing para comportamiento; en test, preguntar por pasado.</em></li>
+                </ol>
+                <p style="font-size:0.72rem;color:var(--text-3);margin-top:12px;font-style:italic;">Fuente: Kahneman (2012) + Reyes (2022), referenciados en la capacitación origen.</p>
+              </details>
             </div>
 
             <!-- PROGRESS M7 -->
@@ -5237,32 +5252,109 @@ _Brief generado con UX Research Coach_
     let   m7Loaded      = false;
     let   scores7       = { task:0, during:0, after:0, explore:0, guide:0 };
 
+    // M7_QUESTION_PATTERNS \u2014 detectores de sesgos cognitivos y malas pr\u00e1cticas de redacci\u00f3n.
+    // Origen: capacitaci\u00f3n LATAM Research Hub, M\u00f3dulo 3 \u2014 los 7 sesgos cognitivos + buenas pr\u00e1cticas.
     const M7_QUESTION_PATTERNS = [
-      { fields:['during','after','explore','guide'],
-        test: v => /(\u00bfte parece (f\u00e1cil|dif\u00edcil|claro|mejor|peor)|\u00bfla app (te parece|es|est\u00e1)|\u00bfes f\u00e1cil|\u00bfes dif\u00edcil)/i.test(v),
-        msg: 'Puede inducir una respuesta y es demasiado general. Mejor pregunt\u00e1 por una tarea o momento espec\u00edfico.' },
-      { fields:['during','after','explore','guide'],
-        test: v => /(\u00bfentend\u00e9s (la|el|esta|esto)\?|\u00bflo entend\u00e9s\?|\u00bfte queda claro\?)/i.test(v),
-        msg: 'Es una pregunta cerrada. Reformul\u00e1la: "\u00bfQu\u00e9 entend\u00e9s de la informaci\u00f3n presentada?"' },
-      { fields:['during','after','explore','guide'],
-        test: v => /(\u00bf.+\? y \u00bf|\u00bf.+\s+y\s+(por qu\u00e9|cu\u00e1ndo|c\u00f3mo|qu\u00e9)\s+\w|\u00bfver si.+y (si|tambi\u00e9n))/i.test(v),
-        msg: 'Est\u00e1s mezclando dos preguntas en una. Separ\u00e1las.' },
-      { fields:['task'],
-        test: v => /(entr\u00e1 a|toc\u00e1|hac\u00e9 clic|presion\u00e1|and\u00e1 a la secci\u00f3n|busc\u00e1 en)/i.test(v),
-        msg: 'Est\u00e1s dando pistas del flujo. La tarea debe indicar qu\u00e9 necesita lograr el usuario, no c\u00f3mo hacerlo.' },
-      { fields:['during','after','explore','guide'],
-        test: v => /(\u00bfusar\u00edas (esta|el|la|este) (funcionalidad|feature|opci\u00f3n|app) (en el futuro|pr\u00f3xima vez|despu\u00e9s)|\u00bflo usar\u00edas de nuevo)/i.test(v),
-        msg: 'Sesgo de proyecci\u00f3n. Las personas no predicen bien su comportamiento futuro. Pregunt\u00e1 por experiencias pasadas.' },
-      { fields:['task'],
-        test: v => /(bot\u00f3n|pantalla|secci\u00f3n|tab|men\u00fa|\u00edcono|link|campo de)/i.test(v),
-        msg: 'La tarea menciona elementos de la interfaz. Reformul\u00e1la desde el objetivo del usuario.' },
+      // 1) Heur\u00edstica del afecto \u2014 "qu\u00e9 te parece", primera persona emocional
+      { bias:'afecto',
+        fields:['during','after','explore','guide'],
+        test: v => /(\u00bfte parece (f\u00e1cil|dif\u00edcil|claro|mejor|peor|bueno|malo|lindo|feo)|\u00bfte gusta|\u00bfqu\u00e9 opin\u00e1s de|\u00bfqu\u00e9 te parece (la|el|esto|esta))/i.test(v),
+        msg: 'Heur\u00edstica del afecto: la pregunta busca opini\u00f3n/emoci\u00f3n en primera persona. Reformul\u00e1 en tercera persona y sobre un par\u00e1metro funcional (claridad, comprensi\u00f3n, utilidad).' },
+
+      // 2) Sesgo de confirmaci\u00f3n \u2014 asume contexto del usuario
+      { bias:'confirmaci\u00f3n',
+        fields:['during','after','explore','guide'],
+        test: v => /(\u00bfqu\u00e9 te pareci\u00f3 la soluci\u00f3n que (te dimos|te ofrecimos|implementamos|nuestra)|\u00bfc\u00f3mo te ayud\u00f3 (nuestra|esta) (app|plataforma|herramienta))/i.test(v),
+        msg: 'Sesgo de confirmaci\u00f3n: asum\u00eds que la soluci\u00f3n le sirvi\u00f3. Quit\u00e1 la palabra "soluci\u00f3n/nuestra" y dej\u00e1 que el usuario nombre lo que ve.' },
+
+      // 3) Efecto ancla \u2014 escalas con connotaci\u00f3n, valores previos
+      { bias:'ancla',
+        fields:['during','after','explore','guide'],
+        test: v => /escala.*(donde 1 es muy bueno|donde 1 es excelente|donde 1 es perfecto|donde 5 es horrible)/i.test(v),
+        msg: 'Efecto ancla: est\u00e1s dando connotaci\u00f3n a los extremos de la escala. Us\u00e1 descriptores neutros que mapeen al par\u00e1metro (muy poco claro / muy claro, muy insuficiente / muy suficiente).' },
+
+      // 4) Heur\u00edstica de disponibilidad \u2014 exagerar por exposici\u00f3n reciente
+      { bias:'disponibilidad',
+        fields:['during','after','explore'],
+        test: v => /(\u00bfcon qu\u00e9 frecuencia|\u00bfcu\u00e1ntas veces (al d\u00eda|por semana|por mes))/i.test(v),
+        msg: 'Heur\u00edstica de disponibilidad: las personas tienden a exagerar/atenuar frecuencias seg\u00fan lo reciente. Si necesit\u00e1s frecuencia, validalo con datos, no solo con auto-reporte.' },
+
+      // 5) Sesgo de representatividad \u2014 perfilamiento no relacionado
+      { bias:'representatividad',
+        fields:['during','after','explore'],
+        test: v => /(\u00bfqu\u00e9 edad ten\u00e9s|\u00bfcu\u00e1l es tu (edad|sexo|g\u00e9nero)|\u00bfde qu\u00e9 (sexo|g\u00e9nero))/i.test(v),
+        msg: 'Sesgo de representatividad: evit\u00e1 preguntas de perfilamiento que no tengan relaci\u00f3n directa con el uso del producto. Si las necesit\u00e1s, justific\u00e1 c\u00f3mo van a ser usadas.' },
+
+      // 6) Efecto halo \u2014 preguntas est\u00e9ticas amplias sin par\u00e1metro funcional
+      { bias:'halo',
+        fields:['during','after','explore'],
+        test: v => /(\u00bfqu\u00e9 impresi\u00f3n te da|\u00bfqu\u00e9 onda (esta|el|la)|\u00bfte resulta atractiv|\u00bfes lind|\u00bfse ve bien)/i.test(v),
+        msg: 'Efecto halo: la pregunta atrae respuestas est\u00e9ticas en vez de funcionales. Sustitu\u00ed por un par\u00e1metro concreto: claridad, utilidad, comprensi\u00f3n.' },
+
+      // 7) Sesgo de proyecci\u00f3n \u2014 predecir comportamiento futuro
+      { bias:'proyecci\u00f3n',
+        fields:['during','after','explore','guide'],
+        test: v => /(\u00bfusar\u00edas (esta|el|la|este)|\u00bflo usar\u00edas|\u00bfcomprar\u00edas|\u00bfpagar\u00edas|\u00bfrecomendar\u00edas|\u00bfvolver\u00edas a usar|\u00bfla pr\u00f3xima vez)/i.test(v),
+        msg: 'Sesgo de proyecci\u00f3n: las personas no predicen bien su comportamiento futuro. Para medir comportamiento us\u00e1 experimentaci\u00f3n (A/B). En el test, pregunt\u00e1 por experiencias pasadas concretas.' },
+
+      // === Buenas pr\u00e1cticas de redacci\u00f3n (no sesgos cognitivos puros) ===
+
+      // Cerradas s\u00ed/no
+      { bias:'cerrada',
+        fields:['during','after','explore','guide'],
+        test: v => /(\u00bfentend\u00e9s (la|el|esta|esto)\?|\u00bflo entend\u00e9s\?|\u00bfte queda claro\?|\u00bfes claro\?|\u00bfes f\u00e1cil\?|\u00bfes dif\u00edcil\?)/i.test(v),
+        msg: 'Pregunta cerrada (s\u00ed/no): no genera informaci\u00f3n cualitativa accionable. Reformul\u00e1 abierta: "\u00bfQu\u00e9 entend\u00e9s de\u2026?", "\u00bfQu\u00e9 tan clara/f\u00e1cil es\u2026?".' },
+
+      // Recordaci\u00f3n (memoria)
+      { bias:'recordaci\u00f3n',
+        fields:['during','after','explore','guide'],
+        test: v => /(\u00bfrecord\u00e1s|\u00bfte acord\u00e1s|\u00bfqu\u00e9 (informaci\u00f3n|datos|texto) record\u00e1s)/i.test(v),
+        msg: 'Evalu\u00e1s memoria, no usabilidad. En la vida real el usuario no necesita recordar; necesita usar lo que tiene delante. Reformul\u00e1 en tiempo presente.' },
+
+      // 2 preguntas en 1
+      { bias:'doble-pregunta',
+        fields:['during','after','explore','guide'],
+        test: v => /(\u00bf.+\? y \u00bf|\u00bf.+\s+y\s+(por qu\u00e9|cu\u00e1ndo|c\u00f3mo|qu\u00e9|para qu\u00e9)\s+\w)/i.test(v),
+        msg: 'Mezcl\u00e1s dos preguntas en una. Separalas para que el usuario pueda responder cada una en orden.' },
+
+      // Tarea con pistas de UI
+      { bias:'pistas-ui',
+        fields:['task','guide'],
+        test: v => /(entr\u00e1 a|toc\u00e1 (el|la|en)|hac\u00e9 clic|presion\u00e1 (el|la)|and\u00e1 a la secci\u00f3n|busc\u00e1 en (el|la) (tab|men\u00fa)|us\u00e1 el bot\u00f3n)/i.test(v),
+        msg: 'La tarea da pistas del flujo. Debe indicar qu\u00e9 necesita lograr el usuario, no c\u00f3mo hacerlo. Reformul\u00e1 desde el objetivo.' },
+
+      // Menci\u00f3n de elementos de UI en tarea
+      { bias:'elementos-ui',
+        fields:['task'],
+        test: v => /\b(bot\u00f3n|pantalla|tab|men\u00fa|\u00edcono|icono|sidebar|modal|popup|toast|drawer)\b/i.test(v),
+        msg: 'La tarea menciona elementos de interfaz. Reformul\u00e1 en t\u00e9rminos del objetivo del usuario (qu\u00e9 quiere lograr), no de la UI.' },
+
+      // Escala sin pregunta de seguimiento
+      { bias:'sin-seguimiento',
+        fields:['after','guide'],
+        test: v => /escala (de|del) 1 a(l)? 5/i.test(v) && !/(por qu[e\u00e9]|qu[e\u00e9] te llev[\u00f3o]|qu[e\u00e9] te hizo)/i.test(v),
+        msg: 'Despu\u00e9s de una escala, siempre agreg\u00e1 "\u00bfPor qu\u00e9 calific\u00e1s con esa nota?" para obtener data cualitativa accionable.' },
+    ];
+
+    // Lista de los 7 sesgos para referencia pedag\u00f3gica (mostrada en el details del UI).
+    const M7_BIAS_REFERENCE = [
+      { id:'afecto',           name:'Heur\u00edstica del afecto',     fix:'Tercera persona, par\u00e1metro funcional.' },
+      { id:'confirmaci\u00f3n',     name:'Sesgo de confirmaci\u00f3n',     fix:'No asumir contexto del usuario.' },
+      { id:'ancla',            name:'Efecto ancla',              fix:'Escalas con descriptores neutros.' },
+      { id:'disponibilidad',   name:'Heur\u00edstica de disponibilidad', fix:'Validar frecuencia con datos.' },
+      { id:'representatividad',name:'Sesgo de representatividad',fix:'Evitar perfilamiento no relacionado.' },
+      { id:'halo',             name:'Efecto halo',               fix:'Preguntar por par\u00e1metro funcional, no est\u00e9tico.' },
+      { id:'proyecci\u00f3n',       name:'Sesgo de proyecci\u00f3n',       fix:'No medir comportamiento futuro; usar A/B testing.' }
     ];
 
     function validateM7Field(key, val) {
       const t = val.trim();
       if (!t) return { status:'empty', score:0, msg:'' };
       const biasMatch = M7_QUESTION_PATTERNS.find(p => p.fields.includes(key) && p.test(t));
-      if (biasMatch) return { status:'bias', score:0, msg: biasMatch.msg };
+      if (biasMatch) {
+        const tag = biasMatch.bias ? `[${biasMatch.bias}] ` : '';
+        return { status:'bias', score:0, msg: tag + biasMatch.msg };
+      }
       if (t.length < (M7_MIN[key]||20))
         return { status:'short', score:1, msg:'Muy breve \u2014 agreg\u00e1 m\u00e1s preguntas o desarroll\u00e1 la tarea.' };
       const okMsgs = {
@@ -5461,7 +5553,10 @@ _Brief generado con UX Research Coach_
       const biasMatch = M7_QUESTION_PATTERNS.find(p => p.fields.includes(key) && p.test(val));
       let fb;
       if (!val)           fb = { ...rule.empty };
-      else if (biasMatch) fb = { ...(rule.bias||rule.empty), diagnosis: biasMatch.msg };
+      else if (biasMatch) {
+        const tag = biasMatch.bias ? `[${biasMatch.bias}] ` : '';
+        fb = { ...(rule.bias||rule.empty), diagnosis: tag + biasMatch.msg };
+      }
       else if (val.length < (M7_MIN[key]||20)) fb = { ...(rule.short||rule.empty) };
       else                fb = { ...rule.ok };
       panel.innerHTML = renderFcpPanel(key, fb, val);
