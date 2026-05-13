@@ -454,11 +454,13 @@
         <p>Estructurá tu proceso de research paso a paso.</p>
       </div>
       <nav class="sidebar-nav">
-        <div class="nav-section-label">Módulos</div>
+        <div class="nav-section-label">Fase 1 · El problema</div>
         <div class="nav-item active" onclick="showModule(1);closeSidebar()" id="nav-1">
           <span class="nav-num">01</span><span class="nav-title">Definir el problema</span>
           <span class="nav-badge active" id="badge-1">Activo</span>
         </div>
+
+        <div class="nav-section-label">Fase 2 · Los objetivos</div>
         <div class="nav-item locked" id="nav-2">
           <span class="nav-num">02</span><span class="nav-title">Objetivo general</span>
           <span class="nav-badge lock" id="badge-2">Bloqueado</span>
@@ -472,6 +474,8 @@
         <div class="nav-item locked" id="nav-5">
           <span class="nav-num">05</span><span class="nav-title">Método de testeo</span><span class="nav-badge lock" id="badge-5">Bloqueado</span>
         </div>
+
+        <div class="nav-section-label">Fase 3 · El test</div>
         <div class="nav-item locked" id="nav-6">
           <span class="nav-num">06</span><span class="nav-title" id="nav-title-6">Escenario</span><span class="nav-badge lock" id="badge-6">Bloqueado</span>
         </div>
@@ -481,6 +485,8 @@
         <div class="nav-item locked" id="nav-8">
           <span class="nav-num">08</span><span class="nav-title" id="nav-title-8">Métricas y criterios</span><span class="nav-badge lock" id="badge-8">Bloqueado</span>
         </div>
+
+        <div class="nav-section-label" style="color:var(--coach);">Fase opcional · Post-test</div>
         <div class="nav-item locked" id="nav-9">
           <span class="nav-num">09</span><span class="nav-title" id="nav-title-9">Síntesis de insights</span><span class="nav-badge lock" id="badge-9">Bloqueado</span>
         </div>
@@ -1583,9 +1589,13 @@
           <div id="module-9" class="page" style="display:none">
 
             <div class="module-header">
-              <div class="module-eyebrow" id="m9-eyebrow">Módulo 09 · Brief de research</div>
+              <div class="module-eyebrow" id="m9-eyebrow" style="color:var(--coach);">Fase opcional · Post-test · Módulo 09</div>
               <h2 class="module-title" id="m9-title">Síntesis de hallazgos e insights</h2>
               <p class="module-desc" id="m9-desc">Transformá los resultados de la investigación en hallazgos, patrones, insights y oportunidades accionables.</p>
+              <div style="margin-top:12px;padding:12px 16px;background:var(--coach-dim);border:1px solid var(--coach-border);border-radius:var(--radius-lg);">
+                <div style="font-family:var(--font-ui);font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--coach);margin-bottom:6px;">◈ Nota — fase opcional</div>
+                <p style="font-size:0.82rem;color:var(--text-2);line-height:1.55;">Los módulos 9 y 10 se completan <strong>después</strong> de ejecutar el test con usuarios. Si todavía estás armando el brief, podés saltearlos y descargar lo construido en los módulos 1–8 con el botón <strong>↓ .md</strong> arriba.</p>
+              </div>
               <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 <button class="btn btn-accent-outline" onclick="loadExampleM9()" style="font-size:9px;padding:6px 12px;">✦ Cargar ejemplo de caso</button>
                 <button class="btn btn-ghost" onclick="clearM9()" style="font-size:9px;padding:6px 12px;">↺ Limpiar módulo</button>
