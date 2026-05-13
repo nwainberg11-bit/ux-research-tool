@@ -843,11 +843,26 @@
             </div>
 
             <!-- PREGUNTA GUÍA -->
-            <div style="background:var(--accent-dim2);border:1px solid rgba(212,240,100,0.15);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:28px;">
+            <div style="background:var(--accent-dim2);border:1px solid rgba(212,240,100,0.15);border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:16px;">
               <div style="font-family:var(--font-ui);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;">Pregunta guía</div>
               <p style="font-size:0.88rem;color:var(--text-1);line-height:1.6;font-style:italic;">¿Qué necesitás entender sí o sí para responder tu objetivo general?</p>
               <p style="font-size:0.76rem;color:var(--text-3);margin-top:8px;line-height:1.5;">Escribí entre 3 y 5 objetivos específicos. Cada uno debe representar una dimensión distinta del problema.</p>
             </div>
+
+            <!-- VERBOS BLOOM (taxonomía) -->
+            <details style="margin-bottom:28px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;">
+              <summary style="cursor:pointer;font-family:var(--font-ui);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--coach);">◈ Verbos sugeridos · Taxonomía de Bloom</summary>
+              <p style="font-size:0.78rem;color:var(--text-2);margin-top:10px;line-height:1.55;">Cada objetivo específico arranca con un verbo. Elegí según el nivel cognitivo que querés activar en el usuario:</p>
+              <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;font-size:0.76rem;color:var(--text-2);line-height:1.5;">
+                <div><strong style="color:var(--text-1);">Conocimiento</strong><br>Adquirir, Citar, Definir, Describir, Enunciar, Identificar, Reconocer, Listar.</div>
+                <div><strong style="color:var(--text-1);">Comprensión</strong><br>Asociar, Comprender, Demostrar, Ejemplificar, Explicar, Relacionar, Resumir, Interpretar.</div>
+                <div><strong style="color:var(--text-1);">Aplicación</strong><br>Adaptar, Aplicar, Calcular, Construir, Determinar, Modificar, Resolver, Usar, Implementar.</div>
+                <div><strong style="color:var(--text-1);">Análisis</strong><br>Analizar, Categorizar, Contrastar, Derivar, Detectar, Diferenciar, Examinar, Comparar.</div>
+                <div><strong style="color:var(--text-1);">Síntesis</strong><br>Anotar, Armar, Compilar, Crear, Diseñar, Formular, Generar, Planificar, Producir.</div>
+                <div><strong style="color:var(--text-1);">Evaluación</strong><br>Calificar, Decidir, Elegir, Evaluar, Opinar, Seleccionar, Valorar, Juzgar, Validar, Verificar.</div>
+              </div>
+              <p style="font-size:0.72rem;color:var(--text-3);margin-top:12px;font-style:italic;">Fuente: Bloom, B.S. (1956) — referenciada en la capacitación origen.</p>
+            </details>
 
             <!-- OBJETIVOS ESPECÍFICOS (3 a 5 dinámicos) -->
             <div id="m3-objectives-container"></div>
@@ -3426,7 +3441,25 @@ _Brief generado con UX Research Coach_
         msg: 'Arranca con un verbo de acción, no de investigación. Usá: Identificar, Entender, Explorar, Evaluar, Indagar, Determinar.' },
     ];
 
-    const M3_RESEARCH_VERBS = /^(identificar|entender|evaluar|indagar|determinar|explorar|analizar|detectar|comprender|conocer|describir|mapear)/i;
+    // Verbos según taxonomía de Bloom (6 niveles) — origen: capacitación LATAM Research Hub.
+    // Permite verbos en infinitivo y conjugados básicos (sin "ar/er/ir" final estricto, regex toma el prefijo).
+    const M3_BLOOM_VERBS = {
+      conocimiento: ['adquirir','citar','definir','describir','enunciar','identificar','reconocer','listar','recordar'],
+      comprension:  ['asociar','comprender','demostrar','ejemplificar','explicar','relacionar','resumir','interpretar','clasificar'],
+      aplicacion:   ['adaptar','aplicar','calcular','construir','determinar','modificar','resolver','usar','utilizar','implementar'],
+      analisis:     ['analizar','categorizar','contrastar','derivar','detectar','diferenciar','examinar','organizar','comparar'],
+      sintesis:     ['anotar','armar','buscar','compilar','crear','diseñar','formular','generar','planificar','producir','sintetizar'],
+      evaluacion:   ['afirmar','calificar','considerar','decidir','elegir','evaluar','opinar','seleccionar','valorar','juzgar','criticar','validar','verificar']
+    };
+    const M3_BLOOM_ALL = Object.values(M3_BLOOM_VERBS).flat();
+    const M3_RESEARCH_VERBS = new RegExp('^(' + M3_BLOOM_ALL.join('|') + ')', 'i');
+    function m3BloomLevel(verb) {
+      const v = verb.toLowerCase().trim().split(/\s+/)[0];
+      for (const [level, verbs] of Object.entries(M3_BLOOM_VERBS)) {
+        if (verbs.some(x => v.startsWith(x))) return level;
+      }
+      return null;
+    }
 
     function validateM3Obj(val) {
       const t = val.trim();
@@ -3707,7 +3740,7 @@ _Brief generado con UX Research Coach_
       panel.innerHTML = renderFcpLoading(); panel.classList.add('open');
 
       let improved = val.trim(), note = '';
-      const VERBS = /^(identificar|entender|evaluar|indagar|determinar|explorar|analizar|detectar|comprender|conocer)/i;
+      const VERBS = M3_RESEARCH_VERBS;
 
       if (!VERBS.test(improved)) {
         // Strip solution verb if present and replace
