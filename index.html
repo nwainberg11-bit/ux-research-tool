@@ -4358,10 +4358,51 @@ _Brief generado con UX Research Coach_
       }
 
       // Re-evaluate enabled state for the new module
-      if (n === 1) updateProgress();
-      if (n === 2) updateProgressM2();
-      if (n === 3) updateProgressM3();
-      if (n === 4) updateProgressM4();
+      try {
+        if (n === 1)  updateProgress();
+        if (n === 2)  updateProgressM2();
+        if (n === 3)  updateProgressM3();
+        if (n === 4)  updateProgressM4();
+        if (n === 5  && typeof updateProgressM5  === 'function') updateProgressM5();
+        if (n === 6  && typeof updateProgressM6  === 'function') updateProgressM6();
+        if (n === 7  && typeof updateProgressM7  === 'function') updateProgressM7();
+        if (n === 8  && typeof updateProgressM8  === 'function') updateProgressM8();
+        if (n === 9  && typeof updateProgressM9  === 'function') updateProgressM9();
+        if (n === 10 && typeof updateProgressM10 === 'function') updateProgressM10();
+      } catch (e) { console.warn('updateTopbar progress failed', e); }
+      // Refresh sidebar badge states (current / done / available / locked)
+      if (typeof refreshSidebarBadges === 'function') refreshSidebarBadges(n);
+    }
+
+    // Mapea estado de cada módulo en el sidebar: actual (active), hecho (done),
+    // disponible (avail) o bloqueado (lock). Se llama en cada cambio de módulo.
+    function refreshSidebarBadges(currentN) {
+      const DONE_KEYS = {
+        1:'ux_rc_m1_done', 2:'ux_rc_m2_done', 3:'ux_rc_m3_done', 4:'ux_rc_m4_done',
+        5:'ux_rc_m5_done', 6:'ux_rc_m6_done', 7:'ux_rc_m7_done', 8:'ux_rc_m8_done',
+        9:'ux_rc_m9_done', 10:'ux_rc_m10_done'
+      };
+      for (let i = 1; i <= 10; i++) {
+        const nav = document.getElementById('nav-'+i);
+        const badge = document.getElementById('badge-'+i);
+        if (!nav || !badge) continue;
+        const isLocked = nav.classList.contains('locked');
+        let done = false;
+        try { done = localStorage.getItem(DONE_KEYS[i]) === '1'; } catch(e){}
+        if (i === currentN) {
+          badge.className = 'nav-badge active';
+          badge.textContent = 'Actual';
+        } else if (done) {
+          badge.className = 'nav-badge done';
+          badge.textContent = 'Hecho';
+        } else if (!isLocked) {
+          badge.className = 'nav-badge avail';
+          badge.textContent = 'Disponible';
+        } else {
+          badge.className = 'nav-badge lock';
+          badge.textContent = 'Bloqueado';
+        }
+      }
     }
 
     /* ============================================================
@@ -5346,13 +5387,20 @@ _Brief generado con UX Research Coach_
       // Recordaci\u00f3n (memoria)
       { bias:'recordaci\u00f3n',
         fields:['during','after','explore','guide'],
-        test: v => /(\u00bfrecord\u00e1s|\u00bfte acord\u00e1s|\u00bfqu\u00e9 (informaci\u00f3n|datos|texto) record\u00e1s)/i.test(v),
+        test: v => /\b(record[\u00e1a]s|te acord[\u00e1a]s|que (informaci\u00f3n|datos|texto) record[\u00e1a]s|recuerdas|te acuerdas)\b/i.test(v),
         msg: 'Evalu\u00e1s memoria, no usabilidad. En la vida real el usuario no necesita recordar; necesita usar lo que tiene delante. Reformul\u00e1 en tiempo presente.' },
 
-      // 2 preguntas en 1
+      // 2 preguntas en 1 \u2014 requiere dos signos ? claros, no marca seguimientos leg\u00edtimos "por qu\u00e9 calific\u00e1s"
       { bias:'doble-pregunta',
         fields:['during','after','explore','guide'],
-        test: v => /(\u00bf.+\? y \u00bf|\u00bf.+\s+y\s+(por qu\u00e9|cu\u00e1ndo|c\u00f3mo|qu\u00e9|para qu\u00e9)\s+\w)/i.test(v),
+        test: v => {
+          // Caso 1: dos preguntas con "?" entremedio
+          if (/\u00bf[^?]+\?\s*y\s*\u00bf/i.test(v)) return true;
+          // Caso 2: una sola pregunta que mezcla dos verbos de acci\u00f3n con "y" intermedio,
+          // pero excluyendo el seguimiento leg\u00edtimo "\u00bfpor qu\u00e9 calific\u00e1s/eleg\u00eds/dec\u00eds\u2026"
+          if (/\u00bf(c[o\u00f3]mo|qu[e\u00e9]) .+ y (c[o\u00f3]mo|qu[e\u00e9]) /i.test(v) && !/y por qu[e\u00e9] (calific|eleg|dec|hiciste|preferi)/i.test(v)) return true;
+          return false;
+        },
         msg: 'Mezcl\u00e1s dos preguntas en una. Separalas para que el usuario pueda responder cada una en orden.' },
 
       // Tarea con pistas de UI
@@ -6296,7 +6344,15 @@ _Brief generado con UX Research Coach_
       const msg     = document.getElementById('m'+n+'-method-msg');
       const coming  = document.getElementById('m'+n+'-coming-title');
 
-      if (eyebrow) eyebrow.textContent = 'Módulo 0'+n+' · Brief de research';
+      if (eyebrow) {
+        // M9 y M10 son Etapa 2 · Post-test. M1-M8 son Etapa 1 · Brief.
+        const isPostTest = (n === 9 || n === 10);
+        const pad = n < 10 ? '0'+n : ''+n;
+        eyebrow.textContent = isPostTest
+          ? `Etapa 2 · Post-test · Módulo ${pad}`
+          : `Módulo ${pad} · Brief de research`;
+        if (isPostTest) eyebrow.style.color = 'var(--coach)';
+      }
       if (title)   title.textContent   = moduleCfg.name;
       if (desc)    desc.textContent    = moduleCfg.desc;
       if (coming)  coming.textContent  = moduleCfg.name+' — Próximamente';
