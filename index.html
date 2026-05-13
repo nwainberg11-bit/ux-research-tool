@@ -1501,6 +1501,27 @@
                 <button class="btn btn-ghost" onclick="clearM8()" style="font-size:9px;padding:6px 12px;">↺ Limpiar módulo</button>
                 <span style="font-size:0.7rem;color:var(--text-3);font-style:italic;">Caso: empresa de salud · autogestión de reservas</span>
               </div>
+
+              <details style="margin-top:16px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;">
+                <summary style="cursor:pointer;font-family:var(--font-ui);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--coach);">◈ 6 parámetros de medición · cómo escribir el criterio de éxito</summary>
+                <p style="font-size:0.78rem;color:var(--text-2);margin-top:10px;line-height:1.55;">Para cada objetivo específico del Módulo 3, identificá qué parámetro lo mide. Esto auto-genera la forma del criterio de éxito y guía la formulación de preguntas en el Módulo 7.</p>
+                <table style="margin-top:12px;width:100%;border-collapse:collapse;font-size:0.76rem;color:var(--text-2);">
+                  <thead><tr style="border-bottom:1px solid var(--border);text-align:left;">
+                    <th style="padding:6px 8px;color:var(--text-1);">Parámetro</th>
+                    <th style="padding:6px 8px;color:var(--text-1);">Qué mide</th>
+                    <th style="padding:6px 8px;color:var(--text-1);">Criterio de éxito tipo</th>
+                  </tr></thead>
+                  <tbody>
+                    <tr style="border-bottom:1px solid var(--border-soft);"><td style="padding:6px 8px;"><strong>Encontrabilidad / eficacia</strong></td><td style="padding:6px 8px;">% de usuarios que encuentran un elemento</td><td style="padding:6px 8px;"><em>Que haga clic en X. ≥78% del total.</em></td></tr>
+                    <tr style="border-bottom:1px solid var(--border-soft);"><td style="padding:6px 8px;"><strong>Comprensión / eficacia</strong></td><td style="padding:6px 8px;">% que comprenden label/texto sin ayuda</td><td style="padding:6px 8px;"><em>Que mencione A/B/C. ≥78% del total.</em></td></tr>
+                    <tr style="border-bottom:1px solid var(--border-soft);"><td style="padding:6px 8px;"><strong>Usabilidad / eficacia</strong></td><td style="padding:6px 8px;">% que completan la tarea/flujo</td><td style="padding:6px 8px;"><em>Que llegue de A a B. ≥78%.</em></td></tr>
+                    <tr style="border-bottom:1px solid var(--border-soft);"><td style="padding:6px 8px;"><strong>Percepción</strong></td><td style="padding:6px 8px;">Likert 1–5 (claridad, CES, CSAT)</td><td style="padding:6px 8px;"><em>≥4 promedio. Acompañar con "¿por qué?".</em></td></tr>
+                    <tr style="border-bottom:1px solid var(--border-soft);"><td style="padding:6px 8px;"><strong>Expectativa</strong></td><td style="padding:6px 8px;">Pregunta abierta: qué espera que pase</td><td style="padding:6px 8px;"><em>N/A — define hipótesis a validar/refutar.</em></td></tr>
+                    <tr><td style="padding:6px 8px;"><strong>Exploratoria</strong></td><td style="padding:6px 8px;">Pregunta abierta de opinión/contexto</td><td style="padding:6px 8px;"><em>N/A — sin respuesta correcta.</em></td></tr>
+                  </tbody>
+                </table>
+                <p style="font-size:0.72rem;color:var(--text-3);margin-top:12px;font-style:italic;">El 78% es el umbral de eficacia que usa el Research Hub. Es fijo, no se ajusta por proyecto.</p>
+              </details>
             </div>
 
             <!-- PROGRESS M8 -->
@@ -1539,6 +1560,22 @@
                 <button class="field-coach-btn" onclick="improveM8Field('observe')">✦ Mejorar respuesta</button>
               </div>
               <div class="field-coach-panel" id="fcp8-observe"></div>
+            </div>
+
+            <!-- CAMPO 1.5: parámetros de medición (selección de los 6) -->
+            <div class="field-group">
+              <label class="field-label">¿Qué parámetros de medición vas a usar? <span class="field-required">*</span></label>
+              <div class="field-hint">Seleccioná los que aplican a tus objetivos específicos. Cada uno define un tipo de criterio de éxito.</div>
+              <div class="chip-group" id="m8-params">
+                <button class="chip" data-value="findability"   onclick="toggleM8Param('findability')">Encontrabilidad</button>
+                <button class="chip" data-value="comprehension" onclick="toggleM8Param('comprehension')">Comprensión</button>
+                <button class="chip" data-value="usability"     onclick="toggleM8Param('usability')">Usabilidad</button>
+                <button class="chip" data-value="perception"    onclick="toggleM8Param('perception')">Percepción</button>
+                <button class="chip" data-value="expectation"   onclick="toggleM8Param('expectation')">Expectativa</button>
+                <button class="chip" data-value="exploratory"   onclick="toggleM8Param('exploratory')">Exploratoria</button>
+              </div>
+              <div id="m8-params-templates" style="margin-top:12px;display:none;"></div>
+              <div class="field-feedback" id="fb8-params"></div>
             </div>
 
             <!-- CAMPO 2: qué medir -->
@@ -5663,14 +5700,76 @@ _Brief generado con UX Research Coach_
 
     /* ============================================================
        MODULE 8 — MÉTRICAS Y CRITERIOS
-       Fields: observe, measure, criteria, barriers (chips), final
+       Fields: observe, measure, criteria, barriers (chips), final, params (chips)
+       Params: los 6 parámetros de medición del material origen.
     ============================================================ */
     const M8_FIELDS      = ['observe','measure','criteria','barriers','final'];
     const M8_MIN         = { observe:30, measure:30, criteria:40, final:60 };
     const STORAGE_DONE8  = 'ux_rc_m8_done';
     let   m8Loaded       = false;
-    let   scores8        = { observe:0, measure:0, criteria:0, barriers:0, final:0 };
+    let   scores8        = { observe:0, measure:0, criteria:0, barriers:0, final:0, params:0 };
     let   m8Barriers     = new Set(); // selected barrier types
+    let   m8Params       = new Set(); // selected measurement params (6)
+
+    const M8_PARAM_DEFS = {
+      findability:   { label:'Encontrabilidad / eficacia', template:'Que el usuario haga clic en [elemento específico]. ≥78% del total.' },
+      comprehension: { label:'Comprensión / eficacia',     template:'Que el usuario mencione [A, B, C]. ≥78% del total.' },
+      usability:     { label:'Usabilidad / eficacia',      template:'Que el usuario logre [completar el flujo / interactuar con X]. ≥78%.' },
+      perception:    { label:'Percepción',                 template:'Que la calificación promedio sea ≥4 en escala 1–5. Acompañar con "¿por qué calificás con esa nota?".' },
+      expectation:   { label:'Expectativa',                template:'Pregunta abierta. Sin criterio binario — define hipótesis a validar/refutar.' },
+      exploratory:   { label:'Exploratoria',               template:'Pregunta abierta. No aplica criterio de éxito; sirve para descubrir motivaciones.' }
+    };
+
+    function toggleM8Param(value) {
+      if (m8Params.has(value)) m8Params.delete(value);
+      else m8Params.add(value);
+      const container = document.getElementById('m8-params');
+      if (container) {
+        container.querySelectorAll('.chip').forEach(c => {
+          c.classList.toggle('selected', m8Params.has(c.dataset.value));
+        });
+      }
+      renderM8ParamTemplates();
+      scores8['params'] = m8Params.size > 0 ? 1 : 0;
+      try { localStorage.setItem('ux_rc_brief_v1_m8_params', JSON.stringify(Array.from(m8Params))); } catch(e){}
+      if (typeof updateProgressM8 === 'function') updateProgressM8();
+    }
+
+    function renderM8ParamTemplates() {
+      const box = document.getElementById('m8-params-templates');
+      if (!box) return;
+      if (m8Params.size === 0) { box.style.display = 'none'; box.innerHTML = ''; return; }
+      const rows = Array.from(m8Params).map(p => {
+        const d = M8_PARAM_DEFS[p];
+        if (!d) return '';
+        return `<div style="padding:10px 12px;background:var(--coach-dim);border:1px solid var(--coach-border);border-radius:var(--radius);margin-bottom:6px;">
+          <div style="font-family:var(--font-ui);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--coach);margin-bottom:4px;">${esc(d.label)} · criterio de éxito tipo</div>
+          <div style="font-size:0.82rem;color:var(--text-1);line-height:1.5;">${esc(d.template)}</div>
+        </div>`;
+      }).join('');
+      box.innerHTML = rows;
+      box.style.display = 'block';
+    }
+
+    function loadM8Params() {
+      try {
+        const raw = localStorage.getItem('ux_rc_brief_v1_m8_params');
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            m8Params = new Set(arr);
+            const container = document.getElementById('m8-params');
+            if (container) {
+              container.querySelectorAll('.chip').forEach(c => {
+                c.classList.toggle('selected', m8Params.has(c.dataset.value));
+              });
+            }
+            renderM8ParamTemplates();
+            scores8['params'] = m8Params.size > 0 ? 1 : 0;
+          }
+        }
+      } catch(e){}
+    }
 
     const M8_BARRIER_LABELS = {
       flow:          'Barreras del flujo',
@@ -6004,6 +6103,7 @@ _Brief generado con UX Research Coach_
           }
         }
       } catch(e){}
+      loadM8Params();
       updateProgressM8(); updateChecklistM8(); updateOutputM8();
       try{if(localStorage.getItem(STORAGE_DONE8)==='1') unlockModule9();}catch(e){}
     }
