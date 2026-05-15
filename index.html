@@ -2272,12 +2272,12 @@ Español rioplatense, tono directo. No inventés información. Si el texto es va
       }
 
       if (fb.suggestion) {
-        // Use data attribute to avoid inline JS string escaping issues
-        const suggId = 'sug-'+key+'-'+Date.now();
+        // El ejemplo es de OTRO caso (ilustrativo). No se ofrece "Usar"
+        // porque pisaría el texto del usuario con contexto ajeno (N5).
         body += `<div class="fcp-row">
-          <div class="fcp-row-label">Sugerencia de redacción</div>
-          <div class="fcp-suggestion" id="${suggId}">${esc(fb.suggestion)}</div>
-          <button class="fcp-use-btn" data-key="${key}" data-sug-id="${suggId}" onclick="useSuggestionFromEl(this)">◈ Usar sugerencia</button>
+          <div class="fcp-row-label">Ejemplo de referencia · otro caso</div>
+          <div class="fcp-suggestion" style="opacity:0.85;">${esc(fb.suggestion)}</div>
+          <div style="margin-top:4px;font-size:0.72rem;color:var(--text-3);font-style:italic;">Es un ejemplo de un caso distinto, para que veas el nivel de detalle esperado. NO es sobre lo que escribiste — adaptalo a tu caso, no lo copies.</div>
         </div>`;
       } else if (fb.status === 'ok') {
         body += `<div class="fcp-row"><div class="fcp-row-label">Recomendación</div><div class="fcp-row-text">${esc(fb.improve)}</div></div>`;
