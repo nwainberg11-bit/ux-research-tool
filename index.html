@@ -1659,11 +1659,15 @@
               <div id="outputTextM8"><span class="output-empty">Completá los campos para ver las métricas validadas aquí.</span></div>
             </div>
 
-            <!-- NEXT STEP M8 -->
+            <!-- CIERRE ETAPA 1 -->
             <div class="next-step-card" id="nextStepCard8">
-              <div class="next-step-eyebrow">✓ Módulo 8 completado · Siguiente paso</div>
-              <p class="next-step-text">Los criterios de análisis están definidos. El próximo paso es <strong>sintetizar hallazgos e insights</strong> a partir de lo que observaste.</p>
-              <button class="btn btn-accent-outline" onclick="goToNextM8()">Ir al Módulo 9 →</button>
+              <div class="next-step-eyebrow" style="color:var(--accent);">✓ Etapa 1 · Brief completo</div>
+              <p class="next-step-text">Tu brief de investigación está armado. <strong>Este es el entregable</strong>: descargalo, ejecutá el test con usuarios, y recién <strong>después</strong> volvé a la Etapa 2 (Módulos 9-10) para cargar los hallazgos.</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+                <button class="btn btn-primary" onclick="exportBriefEtapa1()">⇩ Descargar brief (.md)</button>
+                <button class="btn btn-ghost" onclick="goToNextM8()" style="opacity:0.8;">Ir a Etapa 2 · Post-test →</button>
+              </div>
+              <p style="margin-top:10px;font-size:0.72rem;color:var(--text-3);font-style:italic;">La Etapa 2 se completa con datos reales del test. Si todavía no lo hiciste, descargá el brief y volvé después.</p>
             </div>
 
           </div><!-- /module-8 -->
@@ -7477,6 +7481,64 @@ _Brief generado con UX Research Coach_
           URL.revokeObjectURL(url);
           showToast('✓ Brief descargado como archivo .txt');
         });
+    }
+
+    // Cierre de Etapa 1: arma SOLO el brief (M1-M8), sin secciones post-test
+    // vacías, y lo descarga como archivo. Es el entregable para ir a testear.
+    function exportBriefEtapa1() {
+      const methodKey = getActiveMethod();
+      const method    = researchMethods[methodKey]||researchMethods.moderatedTest;
+      const gv1=k=>document.getElementById('f-'+k)?.value.trim()||'';
+      const gv2=k=>document.getElementById('f2-'+k)?.value.trim()||'';
+      const gv4=k=>document.getElementById('f4-'+k)?.value.trim()||'';
+      const gv5=k=>document.getElementById('f5-'+k)?.value.trim()||'';
+      const gv6=k=>document.getElementById('f6-'+k)?.value.trim()||'';
+      const gv7=k=>document.getElementById('f7-'+k)?.value.trim()||'';
+      const gv8=k=>document.getElementById('f8-'+k)?.value.trim()||'';
+      const M3valid=(typeof m3Objectives!=='undefined'&&m3Objectives)?m3Objectives.filter(v=>v.trim()).map((v,i)=>`${i+1}. ${v.trim()}`).join('\n'):'';
+      const params=(typeof m8Params!=='undefined'&&m8Params)?Array.from(m8Params).map(p=>'- '+(M8_PARAM_DEFS?.[p]?.label||p)).join('\n'):'';
+      const sep='\n'+'─'.repeat(50)+'\n';
+      let b='# UX RESEARCH BRIEF · ETAPA 1\n';
+      b+=`\nMétodo: ${method.label||methodKey}\n`;
+      b+=`Exportado: ${new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})}\n`;
+      b+=sep+'## 1 · DEFINICIÓN DEL PROBLEMA\n\n';
+      if(gv1('initial'))b+=`${gv1('initial')}\n\n`;
+      if(gv1('user'))b+=`Usuario afectado: ${gv1('user')}\n`;
+      if(gv1('what'))b+=`Qué sucede: ${gv1('what')}\n`;
+      if(gv1('context'))b+=`Contexto: ${gv1('context')}\n`;
+      if(gv1('cause'))b+=`Hipótesis / causa: ${gv1('cause')}\n`;
+      if(gv1('impact'))b+=`Impacto: ${gv1('impact')}\n`;
+      if(gv1('evidence'))b+=`Evidencia: ${gv1('evidence')}\n`;
+      b+=sep+'## 2 · OBJETIVO GENERAL\n\n';
+      if(gv2('objective'))b+=`${gv2('objective')}\n`;
+      b+=sep+'## 3 · OBJETIVOS ESPECÍFICOS\n\n';
+      if(M3valid)b+=M3valid+'\n';
+      b+=sep+'## 4 · ALCANCE\n\n';
+      if(gv4('scope'))b+=`${gv4('scope')}\n\n`;
+      if(gv4('out'))b+=`Fuera del alcance: ${gv4('out')}\n`;
+      b+=sep+'## 5 · MÉTODO\n\n';
+      b+=`${method.label||methodKey}\n`;
+      if(gv5('final'))b+=`\n${gv5('final')}\n`;
+      if(gv5('justification'))b+=`\nJustificación: ${gv5('justification')}\n`;
+      b+=sep+`## 6 · ${(method.module6?.name||'ESCENARIO').toUpperCase()}\n\n`;
+      ['situation','task','conditions','scenario'].forEach(k=>{const v=gv6(k);if(v)b+=`${k.toUpperCase()}: ${v}\n\n`;});
+      b+=sep+`## 7 · ${(method.module7?.name||'TAREAS Y PREGUNTAS').toUpperCase()}\n\n`;
+      const g7=gv7('guide');
+      if(g7)b+=g7+'\n';else ['task','during','after','explore'].forEach(k=>{const v=gv7(k);if(v)b+=`${k.toUpperCase()}:\n${v}\n\n`;});
+      b+=sep+`## 8 · ${(method.module8?.name||'MÉTRICAS Y CRITERIOS').toUpperCase()}\n\n`;
+      if(params)b+=`Parámetros de medición:\n${params}\n\n`;
+      const f8=gv8('final');
+      if(f8)b+=f8+'\n';else{if(gv8('observe'))b+=`OBSERVAR:\n${gv8('observe')}\n\n`;if(gv8('measure'))b+=`MEDIR:\n${gv8('measure')}\n\n`;if(gv8('criteria'))b+=`CRITERIOS:\n${gv8('criteria')}\n\n`;}
+      b+='\n'+'═'.repeat(50)+'\n';
+      b+='Fin del brief (Etapa 1). Ejecutá el test y volvé a la Etapa 2 para cargar hallazgos.\nGenerado con UX Research Coach.\n';
+      const stamp=new Date().toISOString().slice(0,10);
+      const blob=new Blob([b.trim()],{type:'text/markdown;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url; a.download=`ux-research-brief-etapa1-${stamp}.md`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('✓ Brief de Etapa 1 descargado (.md)');
     }
 
 
