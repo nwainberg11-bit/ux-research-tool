@@ -1977,7 +1977,51 @@ Español rioplatense, tono directo. No inventés información. Si el texto es va
        Genera feedback contextual por campo sin AI.
        Misma firma de retorno que getFieldAIFeedback.
     ============================================================ */
+    // Sujeto genérico = "la gente / los usuarios / las personas" SIN calificador
+    // inmediato (nuevos, que abandonaron, con plan X, etc.). Mira la ventana de
+    // texto que sigue al sujeto, no todo el string (evita falsos como "registro").
+    function _initialHasGenericSubject(v) {
+      const m = String(v).match(/\b(la gente|los usuarios?|las personas?|el usuario|usuarios?|clientes?|la persona)\b/i);
+      if (!m) return false;
+      const after = v.slice(m.index + m[0].length, m.index + m[0].length + 45);
+      if (/(nuev|activ|recurrent|\bque\b|\bcon\b|\bsin\b|premium|registrad|instalad|mayor|menor|\d|admin|primer|abandonaron|inscript|verificad)/i.test(after)) return false;
+      return true;
+    }
+
     const FIELD_COACH_RULES = {
+      initial: {
+        checks: [
+          { test: v => v.trim().length > 0 && v.trim().length < 40,
+            status:'generico',
+            diagnosis:'La problemática está muy corta. No alcanza para saber qué vas a investigar.',
+            improve:'Sumá quién lo vive, qué pasa concretamente y dónde ocurre.',
+            question:'¿Quién específicamente tiene este problema y en qué momento del flujo aparece?',
+            suggestion:'Los usuarios nuevos de la app que inician el registro no completan la verificación de identidad (KYC), por lo que nunca activan la cuenta.' },
+          { test: v => !/(usuario|cliente|socio|persona|gente|nuevo|activo)/i.test(v),
+            status:'mejorable',
+            diagnosis:'No se identifica a quién le sucede. Una problemática necesita un sujeto observable.',
+            improve:'Decí explícitamente qué tipo de usuario vive el problema.',
+            question:'¿Es un usuario nuevo, recurrente, que ya tenía cuenta, que abandonó un flujo?',
+            suggestion:null },
+          { test: v => _initialHasGenericSubject(v),
+            status:'mejorable',
+            diagnosis:'El sujeto está genérico ("la gente", "los usuarios"). No alcanza para investigar: hay que decir QUÉ tipo de usuario.',
+            improve:'Reemplazá el sujeto genérico por un segmento observable: nuevos, recurrentes, que abandonaron el KYC, etc.',
+            question:'¿Es un usuario nuevo que recién baja la app, uno que ya tenía cuenta, uno que abandonó la verificación?',
+            suggestion:'Los usuarios nuevos que descargan la app e inician el registro no completan la verificación de identidad (KYC), por lo que nunca activan la cuenta.' },
+          { test: v => !/(no |abandon|se traba|no puede|no logra|no complet|falla|error|deja de|se va)/i.test(v),
+            status:'mejorable',
+            diagnosis:'No queda claro qué situación de conflicto ocurre. Falta el "qué sucede" observable.',
+            improve:'Describí el comportamiento o el bloqueo concreto, sin interpretar la causa todavía.',
+            question:'¿Qué hace o deja de hacer el usuario que evidencia el problema?',
+            suggestion:null }
+        ],
+        ok: {
+          diagnosis:'Buena base. La problemática nombra a quién le pasa y qué situación ocurre.',
+          improve:'Más abajo vas a desglosar usuario, qué sucede, contexto, causa, impacto y evidencia. Mantené la coherencia con esto.',
+          question:'¿Esta problemática se puede observar con usuarios reales o todavía es una suposición?'
+        }
+      },
       user: {
         checks: [
           { test: v => /^usuarios?$|^clientes?$|^personas?$/i.test(v.trim()),
@@ -2189,6 +2233,16 @@ Español rioplatense, tono directo. No inventés información. Si el texto es va
       let fb = null;
       try { fb = await getFieldAIFeedback(1, key, val, allAnswers); } catch(e) {}
       if (!fb) fb = buildFieldCoachFeedback(key, val);
+      // Última red de seguridad: si no hay regla local ni AI, igual respondemos algo útil.
+      if (!fb) fb = {
+        status: val.trim().length < 30 ? 'mejorable' : 'ok',
+        diagnosis: val.trim().length < 30
+          ? 'La respuesta es muy corta para evaluarla bien. Desarrollá un poco más.'
+          : 'No se pudo contactar al coach IA. Revisión básica: la respuesta tiene contenido suficiente para avanzar; revisá que sea específica y observable.',
+        improve: 'Asegurate de que sea concreta: quién, qué, dónde/cuándo.',
+        question: '¿Esto se puede observar con usuarios reales o es una suposición?',
+        suggestion: null
+      };
 
       panel.innerHTML = renderFcpPanel(key, fb, val);
     }
@@ -2198,6 +2252,9 @@ Español rioplatense, tono directo. No inventés información. Si el texto es va
     }
 
     function renderFcpPanel(key, fb, originalVal) {
+      if (!fb || typeof fb !== 'object') {
+        return `<div class="fcp-header"><span class="fcp-label">◎ Evaluado</span><button class="fcp-close" onclick="closeFcp(event)">×</button></div><div class="fcp-body"><div class="fcp-row-text">No se pudo generar el feedback. Probá de nuevo en unos segundos.</div></div>`;
+      }
       const statusIcon  = { ok:'✓', mejorable:'⚠', generico:'✕', supuesto:'⚑' }[fb.status] || '◎';
       const statusColor = { ok:'var(--success)', mejorable:'var(--warn)', generico:'var(--error)', supuesto:'var(--warn)' }[fb.status] || 'var(--coach)';
       const statusLabel = { ok:'Campo validado', mejorable:'Necesita mejora', generico:'Demasiado genérico', supuesto:'Revisá supuestos' }[fb.status] || 'Evaluado';
@@ -2294,6 +2351,35 @@ REGLAS CRÍTICAS:
       // Mejoras contextuales por campo
       // Principio: restructurar, clarificar, especificar — no inventar
       const improvers = {
+
+        initial: (v, c) => {
+          if (v.trim().length < 15) {
+            return {
+              improved: null,
+              note: 'El texto es demasiado breve para mejorarlo sin inventar. Escribí al menos quién y qué le pasa.'
+            };
+          }
+          // Sujeto genérico sin calificador → no se puede mejorar sin inventar el segmento
+          if (_initialHasGenericSubject(v)) {
+            return {
+              improved: null,
+              note: 'El sujeto está genérico ("la gente" / "los usuarios"). No puedo mejorarlo sin inventar a quién le pasa. Definí el segmento: ¿usuarios nuevos? ¿que abandonaron el KYC? ¿recurrentes?'
+            };
+          }
+          let out = v.trim();
+          // Si no nombra un sujeto, prefijar con "Los usuarios"
+          if (!/(usuario|cliente|socio|persona|gente|nuevo|activo|paciente)/i.test(out)) {
+            out = 'Los usuarios ' + out.charAt(0).toLowerCase() + out.slice(1);
+          }
+          // Enriquecer con el "qué sucede" si ya existe en otro campo y no está acá
+          if (c.what && c.what.trim() && !out.toLowerCase().includes(c.what.trim().toLowerCase().slice(0, 15))) {
+            out = out.replace(/\.?\s*$/, '') + '. En concreto: ' + c.what.trim().replace(/\.?\s*$/, '') + '.';
+          }
+          return {
+            improved: out,
+            note: 'Reestructuré para que nombre al usuario afectado y, si había, sumé el comportamiento observable del campo "¿Qué sucede?". No agregué datos nuevos.'
+          };
+        },
 
         user: (v, c) => {
           // Si hay texto pero le falta condición/segmento
