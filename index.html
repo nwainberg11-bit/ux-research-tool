@@ -5266,54 +5266,47 @@ _Brief generado con UX Research Coach_
       }
       panel.innerHTML=renderFcpLoading(); panel.classList.add('open');
 
-      let improved=val, note='';
+      // Detectar problemas reales (pistas de UI, lenguaje interno, sesgo) sin
+      // intentar reescribir el texto por el usuario (eso requiere AI / inventar).
+      const uiTerms = [];
+      const uiRe = /\b(entrá a|tocá|hacé clic|hacés clic|presioná|andá a la sección|andá a|buscá en|el botón|la pantalla|la sección|el tab|el menú|el ícono|el icono|el link|el campo|el formulario|deslizá|cliqueá|seleccioná el)\b/gi;
+      let mm; while ((mm = uiRe.exec(val)) !== null) { if (!uiTerms.includes(mm[0].toLowerCase())) uiTerms.push(mm[0].toLowerCase()); }
+      const internalRe = /\b(KYC|nuevo flujo|nueva versión|nueva pantalla|onboarding|prototipo|ancillary|modal|deep link)\b/gi;
+      const internalTerms = []; let im;
+      while ((im = internalRe.exec(val)) !== null) { if (!internalTerms.includes(im[0])) internalTerms.push(im[0]); }
 
-      if (key==='situation') {
-        // Remove UI references
-        improved = val.replace(/entrá a|tocá|hacé clic|presioná|andá a/gi, '').trim();
-        improved = improved.replace(/\s{2,}/g,' ');
-        if (improved !== val) note='Eliminé instrucciones de UI. La situación ahora describe el contexto del usuario.';
-        else { improved=val.charAt(0).toUpperCase()+val.slice(1); if(!/[.?!]$/.test(improved)) improved+='.'; note='Formato limpiado. Verificá que no menciona elementos de la interfaz.'; }
-      } else if (key==='task') {
-        improved = val.replace(/tocá|hacé clic|presioná|buscá el botón/gi, '').trim().replace(/\s{2,}/g,' ');
-        if (improved !== val) note='Eliminé referencias a acciones de UI. La tarea ahora está formulada como objetivo del usuario.';
-        else { improved=val.charAt(0).toUpperCase()+val.slice(1); if(!/[.?!]$/.test(improved)) improved+='.'; note='Formato limpiado. Verificá que describe el resultado esperado, no los pasos.'; }
-      } else if (key==='conditions') {
-        improved=val.charAt(0).toUpperCase()+val.slice(1);
-        if(!/[.?!]$/.test(improved)) improved+='.';
-        note='Formato limpiado. Verificá que solo incluye información que el usuario necesita saber — nada más.';
-      } else if (key==='limits') {
-        improved=val.charAt(0).toUpperCase()+val.slice(1);
-        if(!/[.?!]$/.test(improved)) improved+='.';
-        note='Formato limpiado. Compartí esto con todo el equipo antes de la sesión.';
-      } else if (key==='scenario') {
-        // Remove UI references from scenario
-        const cleaned = val
-          .replace(/entrá a|tocá|hacé clic en|presioná|buscá en la sección/gi, '')
-          .replace(/\s{2,}/g,' ')
-          .trim();
-        if (cleaned !== val) {
-          improved = cleaned.charAt(0).toUpperCase()+cleaned.slice(1);
-          note='Eliminé instrucciones de UI del escenario. Verificá que el texto sigue siendo coherente.';
+      let improved = null, note = '';
+
+      const hasProblems = uiTerms.length > 0 || internalTerms.length > 0;
+
+      if (hasProblems) {
+        // NO reescribimos: damos un diagnóstico honesto y accionable.
+        const parts = [];
+        if (uiTerms.length)       parts.push(`Pistas de interfaz a sacar: ${uiTerms.map(t=>`"${t}"`).join(', ')}.`);
+        if (internalTerms.length) parts.push(`Lenguaje interno/técnico a evitar: ${internalTerms.map(t=>`"${t}"`).join(', ')}.`);
+        note = `No puedo reescribir esto por vos sin inventar contenido. ${parts.join(' ')} Reescribí el ${key==='scenario'?'escenario':'campo'} contando QUÉ quiere lograr la persona (su objetivo cotidiano), nunca CÓMO ni con qué elemento de pantalla.`;
+        improved = null;
+      } else {
+        // Sin problemas de fondo: solo ajustes cosméticos, y lo decimos honestamente.
+        let cosmetic = val.replace(/\s{2,}/g,' ').trim();
+        cosmetic = cosmetic.charAt(0).toUpperCase() + cosmetic.slice(1);
+        if (!/[.?!]$/.test(cosmetic)) cosmetic += '.';
+        if (cosmetic !== val) {
+          improved = cosmetic;
+          note = 'El contenido ya está bien — solo ajusté formato (mayúscula inicial, punto final, espacios). No reescribí lo que dijiste.';
         } else {
-          // Add standard closing if not present
-          if (!val.includes('no estamos evaluando') && !val.includes('no evaluamos') && val.length > 40) {
-            improved = val + ' No estamos evaluando tu desempeño — queremos entender cómo funciona esta experiencia para vos.';
-            note='Agregué el recordatorio de que no se evalúa al participante. Es buena práctica para reducir la ansiedad.';
-          } else {
-            improved = val.charAt(0).toUpperCase()+val.slice(1);
-            note='El escenario tiene buena estructura. Leelo en voz alta para verificar que suena natural.';
-          }
+          improved = null;
+          note = 'No detecté pistas de UI ni lenguaje interno. El campo está en condiciones; si querés, leelo en voz alta para chequear que suena natural.';
         }
       }
 
       const improvId='improv6-'+key+'-'+Date.now();
       let body=`<div class="fcp-row"><div class="fcp-row-label">Nota del coach</div><div class="fcp-row-text hi">${esc(note)}</div></div>`;
-      if(improved!==val){
-        body+=`<div class="fcp-row"><div class="fcp-row-label">Versión mejorada</div><div class="fcp-suggestion" id="${improvId}">${esc(improved)}</div><button class="fcp-use-btn" data-key="${key}" data-sug-id="${improvId}" onclick="useSuggestionM6(this)">◈ Usar versión mejorada</button></div>`;
+      if(improved && improved!==val){
+        body+=`<div class="fcp-row"><div class="fcp-row-label">Versión con formato ajustado</div><div class="fcp-suggestion" id="${improvId}">${esc(improved)}</div><button class="fcp-use-btn" data-key="${key}" data-sug-id="${improvId}" onclick="useSuggestionM6(this)">◈ Usar esta versión</button></div>`;
       }
-      body+=`<div style="margin-top:4px;font-size:0.72rem;color:var(--text-3);font-style:italic;">Usa solo lo que ya escribiste.</div>`;
-      panel.innerHTML=`<div class="fcp-header"><span class="fcp-label"><span style="color:var(--coach);">✦</span>&nbsp;Versión mejorada</span><button class="fcp-close" onclick="closeFcp(event)">×</button></div><div class="fcp-body">${body}</div>`;
+      body+=`<div style="margin-top:4px;font-size:0.72rem;color:var(--text-3);font-style:italic;">El coach no reescribe tu contenido — solo señala qué corregir o ajusta formato.</div>`;
+      panel.innerHTML=`<div class="fcp-header"><span class="fcp-label"><span style="color:var(--coach);">✦</span>&nbsp;Revisión del coach</span><button class="fcp-close" onclick="closeFcp(event)">×</button></div><div class="fcp-body">${body}</div>`;
     }
 
     function useSuggestionM6(btn) {
