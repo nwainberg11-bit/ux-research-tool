@@ -2395,13 +2395,17 @@ REGLAS CRÍTICAS:
           if (!/clientes?|usuarios?|personas?|pacientes?/i.test(v)) {
             out = 'Usuarios ' + v.charAt(0).toLowerCase() + v.slice(1);
           }
-          // Agregar referencia al contexto si hay info en 'what'
-          if (c.what && !/call center|app|aplicación/i.test(v) && /call center|app|aplicación/i.test(c.what)) {
-            out = out.replace(/\.?$/, '') + ', que interactúan con la app.';
+          // (No inventamos contexto: antes se anexaba ", que interactúan con la app."
+          //  aunque no aplicara al caso real. Eso era invención — se removió.)
+          if (out.trim() === v.trim()) {
+            return {
+              improved: null,
+              note: 'El usuario ya está nombrado. Para mejorarlo de verdad necesitás vos agregar una condición observable (qué hizo, qué tiene, de qué segmento es) — no puedo inventarla.'
+            };
           }
           return {
             improved: out,
-            note: 'Reestructuré para que arranque con el segmento y conecte con el contexto del problema.'
+            note: 'Reestructuré para que arranque con el segmento. No agregué información que no estaba.'
           };
         },
 
@@ -2543,19 +2547,23 @@ REGLAS CRÍTICAS:
       const improvId = 'improv-'+key+'-'+Date.now();
       let body = `<div class="fcp-row"><div class="fcp-row-label">Nota del coach</div><div class="fcp-row-text hi">${esc(result.note)}</div></div>`;
 
-      if (result.improved) {
+      // Guardarraíl anti-N6: no mostrar "Versión mejorada" si es igual (o casi) al input.
+      const norm = s => (s||'').trim().toLowerCase().replace(/\s+/g,' ').replace(/[.?!]+$/,'');
+      const isRealChange = result.improved && norm(result.improved) !== norm(val);
+
+      if (isRealChange) {
         body += `<div class="fcp-row">
-          <div class="fcp-row-label">Versión mejorada</div>
+          <div class="fcp-row-label">Versión con ajustes</div>
           <div class="fcp-suggestion" id="${improvId}">${esc(result.improved)}</div>
-          <button class="fcp-use-btn" data-key="${key}" data-sug-id="${improvId}" onclick="useSuggestionFromEl(this)">◈ Usar versión mejorada</button>
+          <button class="fcp-use-btn" data-key="${key}" data-sug-id="${improvId}" onclick="useSuggestionFromEl(this)">◈ Usar esta versión</button>
         </div>`;
       }
 
-      body += `<div style="margin-top:4px;font-size:0.72rem;color:var(--text-3);font-style:italic;">La mejora usa solo lo que ya escribiste. No agrega información nueva.</div>`;
+      body += `<div style="margin-top:4px;font-size:0.72rem;color:var(--text-3);font-style:italic;">El coach no reescribe tu contenido — solo señala qué corregir o ajusta formato. No inventa datos.</div>`;
 
       panel.innerHTML = `
         <div class="fcp-header">
-          <span class="fcp-label"><span style="color:var(--coach);font-size:11px;">✦</span>&nbsp;Versión mejorada</span>
+          <span class="fcp-label"><span style="color:var(--coach);font-size:11px;">✦</span>&nbsp;Revisión del coach</span>
           <button class="fcp-close" onclick="closeFcp(event)">×</button>
         </div>
         <div class="fcp-body">${body}</div>`;
