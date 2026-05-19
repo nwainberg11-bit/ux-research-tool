@@ -57,3 +57,119 @@ button {
 }
 button:hover:not(:disabled) { border-color: var(--accent); }
 button:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ─── Pasos: tipografía base ───────────────────────────────────────── */
+.step-intro { color: var(--muted); margin: 0 0 22px; max-width: 70ch; }
+h2 { font-size: 18px; margin: 32px 0 10px; }
+
+/* ─── Campos ───────────────────────────────────────────────────────── */
+.fields { display: grid; gap: 22px; margin-top: 8px; }
+.field { display: grid; gap: 6px; }
+.field-head { display: flex; justify-content: space-between; align-items: baseline; }
+.field-head label { font-weight: 600; }
+.field-badges { display: flex; gap: 6px; }
+.badge {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  padding: 2px 7px; border-radius: 999px; background: #232836; color: var(--muted);
+}
+.badge.req { background: #3a1f2a; color: #ff9bb6; }
+.badge.opt { background: #1f2a36; color: #9bbcff; }
+.badge.ai  { background: #2a2240; color: #c8a8ff; }
+.field-hint, .hint { color: var(--muted); font-size: 13px; margin: 0; }
+
+textarea, input[type="text"] {
+  width: 100%; background: var(--panel); color: var(--txt);
+  border: 1px solid var(--line); border-radius: 8px;
+  padding: 10px 12px; font: inherit; resize: vertical;
+}
+textarea:focus, input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+label.check, label.radio {
+  display: inline-flex; align-items: center; gap: 8px; color: var(--muted);
+  font-size: 14px; cursor: pointer;
+}
+label.check.extra { margin-top: 4px; }
+label.radio { margin-right: 18px; }
+
+/* ─── Coach panel ──────────────────────────────────────────────────── */
+.coach-btn {
+  margin-top: 8px; font-size: 12px; padding: 6px 11px;
+}
+.coach-btn.small { padding: 4px 9px; font-size: 11px; }
+.coach-panel { margin-top: 8px; }
+.coach-loading { color: var(--muted); font-size: 13px; font-style: italic; }
+.coach-honest {
+  background: #1c1f29; border-left: 3px solid var(--muted);
+  padding: 10px 14px; border-radius: 6px; font-size: 13px; color: var(--muted);
+}
+.coach-result {
+  background: #1a1f2b; border-left: 3px solid var(--accent);
+  padding: 12px 14px; border-radius: 6px; font-size: 13px;
+}
+.coach-result.status-ok        { border-left-color: #5be38a; }
+.coach-result.status-mejorable { border-left-color: #f3c050; }
+.coach-result.status-no_cumple { border-left-color: #ff7575; }
+.coach-status {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+  margin-bottom: 6px; color: var(--muted);
+}
+.coach-result p { margin: 4px 0; line-height: 1.55; }
+.coach-result .socratic { color: #c8a8ff; }
+.coach-result .example { color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 8px; }
+
+/* ─── Alerts y guides ──────────────────────────────────────────────── */
+.alert {
+  background: #2a1c1c; color: #ffb3b3; border: 1px solid #5a2a2a;
+  padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 13px;
+}
+.guide {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 8px; padding: 10px 14px; margin-bottom: 18px;
+}
+.guide summary { cursor: pointer; font-weight: 600; }
+.stakeholder-list { padding-left: 18px; margin: 10px 0 0; color: var(--muted); }
+.stakeholder-list li { margin: 4px 0; }
+
+/* ─── Paso 1: párrafo integrado ────────────────────────────────────── */
+.output-block {
+  margin-top: 36px; padding-top: 22px; border-top: 1px solid var(--line);
+}
+.output-block textarea { background: #131722; }
+
+/* ─── Paso 3: lista de objetivos ───────────────────────────────────── */
+.objectives { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.objective-item {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+  padding: 12px;
+}
+.objective-row { display: flex; gap: 8px; align-items: flex-start; }
+.objective-row textarea { flex: 1; }
+.icon-btn {
+  background: transparent; border: 1px solid var(--line); color: var(--muted);
+  padding: 4px 9px; border-radius: 6px; cursor: pointer;
+}
+.objective-meta { display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.bloom-badge {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  padding: 2px 7px; border-radius: 999px;
+}
+.bloom-badge.ok   { background: #1d3a26; color: #7eea9b; }
+.bloom-badge.warn { background: #3a2f1a; color: #f3c050; }
+.add-btn {
+  margin-top: 12px; font-size: 13px;
+}
+.block { margin-top: 30px; }
+
+/* ─── Paso 4: tabla M/NoM ──────────────────────────────────────────── */
+.layout-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+@media (max-width: 1024px) { .layout-2col { grid-template-columns: 1fr; } }
+table.compare {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+  background: var(--panel); border-radius: 8px; overflow: hidden;
+}
+table.compare th, table.compare td {
+  border: 1px solid var(--line); padding: 8px 10px; vertical-align: top;
+  text-align: left;
+}
+table.compare thead th { background: #1c2230; color: var(--txt); }
+table.compare th[scope="row"] { background: #1a1f2a; color: var(--muted); width: 110px; }
