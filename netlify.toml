@@ -1,12 +1,25 @@
 [build]
-  publish = "."
+  command   = "npm run build"
+  publish   = "dist"
   functions = "netlify/functions"
 
 [functions]
   node_bundler = "esbuild"
 
+# v2 es un branch deploy. v1 (rama main) sigue sirviendo con su propio
+# netlify.toml (publish=".") sin tocarse hasta que mergeemos.
+[context.production]
+  command = "npm run build"
+  publish = "dist"
+
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "SAMEORIGIN"
+    X-Frame-Options        = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
+
+# SPA fallback: cualquier ruta no-asset cae al index.html del bundle.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
