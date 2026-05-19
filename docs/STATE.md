@@ -12,12 +12,14 @@ Reescritura v2 en curso. Spec aprobado (`docs/SPEC-V2.md`). Rama `v2` (v1 monoli
 
 ## Completado
 - **F0 — Andamiaje** ✅ (commit 44866f8). Estructura modular SPEC-V2 §7, build Vite verde, store + persistencia localStorage, shell con sidebar 3 fases + cierre, 8 pasos + brief navegables en orden canónico. coach/client.js con timeout 20s + estado honesto. Orden canónico verificado por assert (build + datos). Click-through DOM completo queda para F5 (verificación E2E) — el browser MCP estaba tomado por otra sesión.
+- **F1 — Fuente como datos** ✅. Constantes de la fuente en `src/source/`: Bloom 6 niveles (45 verbos), 6 parámetros + forma de criterio + 78% fijo, tabla Moderado/No Moderado, 6 preguntas stakeholders, buenas prácticas de preguntas. Validadores deterministas §5 portados de v1 con bugs corregidos: `bias-detector` (7 sesgos + 6 malas prácticas), `ui-jargon-detector` (escenario), `bloom-verb` (objetivos específicos). Vitest: **32/32 verdes**. Build verde.
 
 ## En progreso
-Ninguno. F0 cerrado.
+Ninguno. F1 cerrado.
 
 ## Siguiente
-- **F1 — Fuente como datos**: constantes (Bloom 6 niveles, 6 parámetros + forma de criterio, tabla Moderado/No Moderado, 6 preguntas stakeholders, banco de preguntas textual) en `src/source/` + validadores deterministas §5 (sesgos paso 7, UI/jerga paso 8) portados de v1 con tests Vitest.
+- **F2 — Pasos 1–4** (Fase 1 + 2 del flujo): cablear los campos de cada paso a sus schemas reales (SPEC-V2 §3), conectar coach por campo (contrato §4), agregar la tabla M/NoM siempre visible en paso 4, mostrar las 6 preguntas de stakeholders como guía previa al paso 2.
+- **Pendiente externo**: cargar texto literal de "preguntas que funcionan" por parámetro en `question-bank.js` (necesita el PDF Módulo 3 — hoy queda con `examples: []` para no inventar).
 
 ## Notas
 - Stack: Vanilla JS + ES modules + Vite → bundle estático. Deploy idéntico a v1 (static + 1 Netlify function), se cablea en F6.
