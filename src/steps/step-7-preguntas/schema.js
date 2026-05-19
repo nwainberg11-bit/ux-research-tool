@@ -1,7 +1,12 @@
-// Paso 7 · Construir preguntas (SPEC-V2 §3). F0: stub. Campos/reglas de la fuente → F2/F3.
+// Paso 7 · Construir preguntas (SPEC-V2 §3 paso 7).
+// Por CADA objetivo específico → preguntas. El detector de sesgos corre
+// live por cada pregunta (validador determinista §5.1).
+
 export default {
   n: 7,
   slug: 'preguntas',
   title: 'Construir preguntas',
-  fields: [] // se completa con los campos [req]/[opt]/[AI] de la fuente
+  fase: 'Fase 3 · El test',
+  perObjective: true,
+  fields: []
 };
