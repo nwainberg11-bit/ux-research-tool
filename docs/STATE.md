@@ -19,11 +19,17 @@ Reescritura v2 en curso. Spec aprobado (`docs/SPEC-V2.md`). Rama `v2` (v1 monoli
 - **F4 — Cierre** ✅. Tres archivos chicos: `src/brief/assemble.js` (función pura state→brief estructurado, con trazabilidad y completitud), `src/brief/export.js` (función pura brief→Markdown), `src/steps/step-brief/view.js` (pantalla de cierre). Brief con barra de completitud por color (verde/amarillo/rojo), lista de faltantes desplegable, botones Copiar Markdown y Descargar .md. Marca "hipótesis a validar" cuando paso 1 lo flagueó. Render del brief en pantalla con trazabilidad por objetivo + escenario + recordatorio. Tests Vitest 9 nuevos (assemble + export). **41/41 verdes**. Build verde (43 módulos, 57kb/18kb gz). Archivos del cierre: máx 154 líneas.
 
 ## En progreso
-Ninguno. F4 cerrado.
+- **F6 — Deploy** (parcial). Branch `v2` pusheada al remote `nwainberg11-bit/ux-research-tool`. `netlify.toml` actualizado: `command=npm run build`, `publish=dist`, SPA redirect `/* → /index.html`. Netlify debería estar generando el branch deploy automáticamente. Producción (v1 en `main`) intacta.
 
-## Siguiente
-- **F5 — Verificación**: E2E que reproduce N1/N4/N5/N6/N10 (lecciones del test PREX) y confirma que NO ocurren en v2 + smoke de navegación por los 8 pasos + brief. Aquí se hace el click-through completo en navegador real que F0/F2 dejaron pendiente.
-- **F6 — Deploy**: Nico conecta Netlify + GEMINI_API_KEY + ALLOWED_ORIGINS, cambio de `netlify.toml` publish a `dist/`, push y verify.
+## Pendientes F6
+- Confirmar URL del branch deploy y status del build.
+- Agregar URL preview a `ALLOWED_ORIGINS` en env vars del site (para que el coach acepte requests desde esa URL).
+- Verificar que `GEMINI_API_KEY` esté cargada (heredada de v1 si Nico la tenía); si no, crear key en aistudio.google.com y agregarla.
+- Smoke check de los 9 pasos + brief en la URL preview.
+
+## Siguiente (después de F6)
+- **F5 — Verificación**: E2E que reproduce N1/N4/N5/N6/N10 (lecciones del test PREX) y confirma que NO ocurren en v2. Click-through completo en navegador real que F0/F2 dejaron pendiente.
+- Cuando F6 + F5 estén verdes: merge `v2 → main` para promover a producción y reemplazar el monolito v1 por el modular v2.
 - **Pendiente externo**: cargar texto literal de "preguntas que funcionan" por parámetro en `question-bank.js` (necesita el PDF Módulo 3 — hoy queda con `examples: []` para no inventar).
 - **Pendiente verificación**: smoke E2E real en navegador del paso 1→4 (el browser MCP estaba tomado en sesiones previas; queda para F5 según spec §10).
 
