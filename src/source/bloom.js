@@ -1,5 +1,5 @@
 // Taxonomía de Bloom — 6 niveles cognitivos (SPEC-V2 §5.3).
-// Fuente: Capacitación LATAM Research Hub, Módulo 2 — "Verbos para objetivos específicos".
+// Fuente: material de capacitación, Módulo 2 — "Verbos para objetivos específicos".
 // Cada objetivo específico DEBE arrancar con un verbo de esta lista (§3 paso 3).
 
 export const BLOOM_LEVELS = [

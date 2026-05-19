@@ -1,7 +1,7 @@
 # SPEC v2 — UX Research Coach
 
 > [NICO] Spec de reescritura desde cero. Fiel a rajatabla a los 4 PDFs origen
-> (Capacitación "Brief de validación de soluciones", Research Hub / Ebiz LATAM 2024).
+> (material de capacitación "Brief de validación de soluciones").
 > Estado: BORRADOR para revisión de Harold/Nico. No escribir código hasta aprobado.
 > Fecha: 2026-05-19.
 
@@ -9,7 +9,7 @@
 
 ## 1. Qué es v2 (y qué NO es)
 
-**Es:** una herramienta que guía a un investigador a construir **un Brief de validación de soluciones** (test de usabilidad) siguiendo la secuencia canónica de la capacitación LATAM. El entregable es **el brief armado**, listo para ir a ejecutar el test.
+**Es:** una herramienta que guía a un investigador a construir **un Brief de validación de soluciones** (test de usabilidad) siguiendo la secuencia canónica de la material de capacitación. El entregable es **el brief armado**, listo para ir a ejecutar el test.
 
 **NO es:**
 - No es UX research general (discovery, etnografía, entrevistas abiertas). Es **validación de una solución ya diseñada** vía test de usabilidad (moderado o no moderado).

@@ -1,5 +1,5 @@
 // Moderado vs No Moderado (SPEC-V2 §3 paso 4).
-// Fuente: Capacitación LATAM, Módulo 2 — tabla comparativa. La app la muestra
+// Fuente: material de capacitación, Módulo 2 — tabla comparativa. La app la muestra
 // SIEMPRE visible junto al radio cuando el usuario está en el paso 4.
 
 export const TEST_TYPES = [

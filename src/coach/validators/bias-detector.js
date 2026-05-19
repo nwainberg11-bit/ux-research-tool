@@ -1,5 +1,5 @@
 // Detector de sesgos cognitivos + malas prácticas en preguntas (SPEC-V2 §5.1).
-// Origen: capacitación LATAM, Módulo 3 — 7 sesgos cognitivos + 6 malas prácticas.
+// Origen: material de capacitación, Módulo 3 — 7 sesgos cognitivos + 6 malas prácticas.
 // Portado de v1 `M7_QUESTION_PATTERNS` con los bugs ya corregidos
 // (recordación regex y doble-pregunta sin falso positivo en "¿por qué calificás?").
 //

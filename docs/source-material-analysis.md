@@ -1,8 +1,8 @@
 # Análisis del material origen vs herramienta actual
 
-> Fuente: 4 PDFs en Drive carpeta `1E6FEFC-hgom1j3ibLRkECD1Q52NCzqDy` (compartida por Nico, mayo 2026).
-> Material: **Capacitación de Brief de validación de soluciones** — Research Hub / Ebiz LATAM, 2024.
-> Audiencia original: roles UXD y UXW de LATAM Airlines (capacitación obligatoria interna).
+> Fuente: 4 PDFs del material de capacitación compartido por Nico (mayo 2026).
+> Material: **Capacitación de Brief de validación de soluciones**.
+> Audiencia original: roles UXD y UXW (capacitación interna).
 > Duración total: 4.5 horas (3 módulos × 1.5 h).
 
 ## Objetivo del material origen
@@ -18,8 +18,8 @@ Acelerar la creación de briefs para **test de validación de soluciones de dise
 
 **Frase clave del material:** *"Si la causa no está definida entonces hay que hacer un discovery para validar el problema, y la causa pasa a ser una hipótesis."*
 
-**Ejemplos del material (todos aviación / LATAM):**
-- Producto LATAM Flex con 2% conversión (info escondida en booking flow).
+**Ejemplos del material (todos aviación / ):**
+- Producto  Flex con 2% conversión (info escondida en booking flow).
 - Agentes Contact Center con info de millas en plataforma separada (TMO y CPC).
 - Baja conversión en paquetes Disney (Miami/Orlando).
 

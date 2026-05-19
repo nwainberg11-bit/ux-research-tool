@@ -1,5 +1,5 @@
 // Las 6 preguntas a stakeholders para definir el alcance (SPEC-V2 §3 paso 2).
-// Fuente: Capacitación LATAM, Módulo 2 — "Definir el alcance".
+// Fuente: material de capacitación, Módulo 2 — "Definir el alcance".
 //
 // La app las muestra como guía PREVIA al paso 2. No obligan a responderse dentro
 // de la herramienta; ayudan al investigador a llegar con el alcance pensado.

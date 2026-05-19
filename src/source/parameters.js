@@ -1,5 +1,5 @@
 // Los 6 parámetros de medición (SPEC-V2 §3 paso 5 + §5.4).
-// Fuente: Capacitación LATAM, Módulo 3 — "Identificar parámetros de medición".
+// Fuente: material de capacitación, Módulo 3 — "Identificar parámetros de medición".
 //
 // Reglas duras de la fuente:
 // - Cada objetivo específico recibe EXACTAMENTE 1 parámetro.

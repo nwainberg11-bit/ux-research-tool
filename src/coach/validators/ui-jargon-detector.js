@@ -1,5 +1,5 @@
 // Detector de UI/jerga en el escenario (SPEC-V2 §5.2 + §3 paso 8).
-// Origen: capacitación LATAM, Módulo 3 — "construir el escenario".
+// Origen: material de capacitación, Módulo 3 — "construir el escenario".
 // Portado de v1 `M6_BIAS_PATTERNS` (la lógica HONESTA, no el motor `improveM6Field`
 // que reescribía — eso se descarta entero, ver SPEC-V2 §9).
 //

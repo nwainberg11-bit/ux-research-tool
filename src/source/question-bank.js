@@ -1,5 +1,5 @@
 // Banco de preguntas por parámetro (SPEC-V2 §3 paso 7 + decisión gate 2026-05-19:
-// "textual de la fuente"). Origen: Capacitación LATAM, Módulo 3 —
+// "textual de la fuente"). Origen: material de capacitación, Módulo 3 —
 // "preguntas que funcionan" (ejemplos por parámetro de medición).
 //
 // PENDIENTE F2/F3: cargar el TEXTO EXACTO de los ejemplos por parámetro desde
