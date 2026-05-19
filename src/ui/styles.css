@@ -239,3 +239,53 @@ table.compare th[scope="row"] { background: #1a1f2a; color: var(--muted); width:
   border-left: 3px solid #9bbcff; border-radius: 6px;
   font-size: 13px; color: var(--muted);
 }
+
+/* ─── Cierre · El brief ────────────────────────────────────────────── */
+.brief-meter { margin: 18px 0 4px; }
+.brief-meter .meter-bar {
+  height: 8px; background: #1a1f2a; border-radius: 99px; overflow: hidden;
+}
+.brief-meter .meter-bar > span {
+  display: block; height: 100%; background: var(--accent); transition: width .3s;
+}
+.brief-meter.ok  .meter-bar > span { background: #5be38a; }
+.brief-meter.warn .meter-bar > span { background: #f3c050; }
+.brief-meter.bad  .meter-bar > span { background: #ff7575; }
+.meter-label { font-size: 12px; color: var(--muted); margin-top: 6px; }
+.brief-ready {
+  background: #1d3a26; color: #7eea9b; padding: 10px 14px;
+  border-radius: 8px; margin: 8px 0 20px; font-weight: 600;
+}
+.missing summary { cursor: pointer; color: var(--muted); margin-bottom: 8px; }
+.missing ul { padding-left: 18px; color: var(--muted); font-size: 13px; }
+
+.brief-actions {
+  display: flex; gap: 10px; align-items: center;
+  margin: 14px 0 28px;
+}
+.toast {
+  font-size: 12px; padding: 5px 11px; background: #1d3a26;
+  color: #7eea9b; border-radius: 999px;
+}
+
+.brief-doc {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 10px; padding: 22px 26px;
+}
+.brief-doc h2 { margin-top: 28px; }
+.brief-doc h2:first-of-type { margin-top: 4px; }
+.brief-doc h3 { font-size: 15px; margin: 18px 0 6px; color: var(--muted); }
+.brief-doc h4 { font-size: 14px; margin: 18px 0 6px; }
+.brief-doc blockquote {
+  margin: 8px 0; padding: 8px 14px; background: #131722;
+  border-left: 3px solid var(--accent); border-radius: 6px;
+}
+.brief-doc .lead { font-style: italic; color: var(--txt); }
+.brief-doc .muted { color: var(--muted); }
+.brief-doc .brief-list { padding-left: 20px; margin: 6px 0; }
+.brief-doc .brief-list li { margin: 3px 0; }
+.brief-obj {
+  border-top: 1px dashed var(--line); padding: 10px 0;
+}
+.brief-obj:first-of-type { border-top: 0; }
+.relato { font-size: 15px; font-style: italic; }
