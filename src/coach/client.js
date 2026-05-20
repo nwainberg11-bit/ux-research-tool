@@ -9,7 +9,7 @@
 // - Sin AI disponible / error / parseo roto → estado honesto, jamás "Analizando…"
 //   eterno y jamás se inventa un resultado.
 
-const ENDPOINT = '/.netlify/functions/coach';
+const ENDPOINT = '/api/coach';
 const TIMEOUT_MS = 20000;
 
 const UNAVAILABLE = {
