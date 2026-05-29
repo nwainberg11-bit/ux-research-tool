@@ -125,7 +125,10 @@ exports.handler = async (event) => {
   }
 
   try {
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    // [NICO] gemini-2.0-flash da cuota 0 en la cuenta de Nico (429 RESOURCE_EXHAUSTED);
+    // 2.5-flash sí tiene free tier. thinkingBudget:0 evita que el "pensamiento"
+    // se coma el presupuesto y corte el JSON a la mitad (verificado 2026-05-29).
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const geminiBody = {
       contents: [
@@ -136,8 +139,9 @@ exports.handler = async (event) => {
         : undefined,
       generationConfig: {
         temperature: 0.4,
-        maxOutputTokens: 1024,
-        responseMimeType: 'application/json'
+        maxOutputTokens: 2048,
+        responseMimeType: 'application/json',
+        thinkingConfig: { thinkingBudget: 0 }
       }
     };
 

@@ -40,7 +40,7 @@ Se abre en **http://localhost:5173** automáticamente. La app persiste el estado
 
 ### Qué requiere Gemini conectado
 
-El botón "Evaluar con coach" en cada campo llama a Gemini 2.0 Flash a través de una Netlify Function. Sin configurar la key, devuelve el estado honesto _"coach no disponible"_ — no se cuelga ni inventa.
+El botón "Evaluar con coach" en cada campo llama a Gemini 2.5 Flash a través de una Netlify Function (o `/api/coach` en Vercel). Sin configurar la key, devuelve el estado honesto _"coach no disponible"_ — no se cuelga ni inventa.
 
 Para activarlo en local, ver sección [Coach AI en local](#coach-ai-en-local) abajo.
 
@@ -132,7 +132,7 @@ Para promover v2 a producción: merge `v2 → main`.
 
 ## Límites del plan gratuito
 
-- **Gemini 2.0 Flash**: 15 req/min, 1.500 req/día. Suficiente para uso de un equipo chico.
+- **Gemini 2.5 Flash** (free tier): los límites exactos de req/min y req/día los fija Google y cambian — ver [ai.google.dev/gemini-api/docs/rate-limits](https://ai.google.dev/gemini-api/docs/rate-limits). Para más volumen, `gemini-2.5-flash-lite` tiene cuota gratis más alta. (Nota: `gemini-2.0-flash` quedó con cuota 0 en esta cuenta → por eso se usa 2.5.)
 - **Netlify free**: 125k invocations/mes, 100GB bandwidth, 300 build minutes. Suficiente para nicho.
 
 La función `coach.js` tiene rate-limit propio de 20 req/min por IP para no explotar la key.
