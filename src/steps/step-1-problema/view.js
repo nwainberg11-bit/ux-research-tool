@@ -6,6 +6,12 @@ import { renderField, bindFields, escapeHtml } from '../../ui/fields.js';
 
 export const meta = schema;
 
+function hipotesisAvisoHtml(active) {
+  return active
+    ? `<div class="alert">Causa no validada: esto requiere un discovery previo. Queda como hipótesis.</div>`
+    : '';
+}
+
 function autoParagraph(d) {
   const partes = [];
   if (d.quien_que_donde) partes.push(d.quien_que_donde.trim());
@@ -27,10 +33,6 @@ export function render(data) {
     )
     .join('');
 
-  const hipotesisAviso = data.por_que_hipotesis
-    ? `<div class="alert">Causa no validada: esto requiere un discovery previo. Queda como hipótesis.</div>`
-    : '';
-
   const paragraph = data.paragraph_manual_edit
     ? data.paragraph
     : autoParagraph(data);
@@ -39,7 +41,7 @@ export function render(data) {
     <span class="step-kicker">Paso 1 · Fase 1</span>
     <h1>${escapeHtml(schema.title)}</h1>
     <p class="step-intro">Describí el problema con cuatro miradas. La fuente exige objetividad: causa desde la experiencia, consecuencia concreta y, si la tenés, evidencia.</p>
-    ${hipotesisAviso}
+    <div data-hipotesis-aviso>${hipotesisAvisoHtml(data.por_que_hipotesis)}</div>
     <div class="fields">${fieldsHtml}</div>
 
     <section class="output-block">
@@ -61,13 +63,16 @@ export function bind(host, ctx) {
   }
   // Auto-actualizar el párrafo mientras editás campos, mientras no lo hayas
   // tocado manualmente. NO re-renderiza la página (no perdés foco).
+  const avisoEl = host.querySelector('[data-hipotesis-aviso]');
   host.querySelectorAll('[data-field]').forEach((el) => {
-    el.addEventListener('input', () => {
+    const evt = el.type === 'checkbox' || el.type === 'radio' ? 'change' : 'input';
+    el.addEventListener(evt, () => {
       const d = { ...(ctx.getContext()['paso_1'] || {}) };
       // Reconstruimos data del paso 1 leyendo lo recién seteado en el store.
       ['quien_que_donde', 'por_que', 'que_provoca', 'evidencia', 'por_que_hipotesis'].forEach((k) => {
         d[k] = ctx.getValue(k);
       });
+      if (avisoEl) avisoEl.innerHTML = hipotesisAvisoHtml(d.por_que_hipotesis);
       if (!ctx.getValue('paragraph_manual_edit') && paraEl) {
         paraEl.value = autoParagraph(d);
         ctx.setValue('paragraph', paraEl.value);
