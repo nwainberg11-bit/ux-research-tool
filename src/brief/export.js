@@ -2,6 +2,7 @@
 // Función PURA: briefData → string Markdown. Sin DOM, sin estado.
 //
 // El brief es el ENTREGABLE del producto. Cierre explícito y visible.
+import { completenessLabel } from './completeness-labels.js';
 
 /**
  * @param {ReturnType<import('./assemble.js').assembleBrief>} brief
@@ -122,7 +123,7 @@ export function briefToMarkdown(brief) {
   if (brief.completeness.missing.length) {
     lines.push('');
     lines.push('Faltan:');
-    brief.completeness.missing.forEach((k) => lines.push(`- ${k}`));
+    brief.completeness.missing.forEach((k) => lines.push(`- ${completenessLabel(k)}`));
   }
 
   return lines.join('\n').replace(/\n{3,}/g, '\n\n');

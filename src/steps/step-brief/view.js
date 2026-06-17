@@ -5,6 +5,7 @@ import { escapeHtml } from '../../ui/fields.js';
 import { getState } from '../../state/store.js';
 import { assembleBrief } from '../../brief/assemble.js';
 import { briefToMarkdown } from '../../brief/export.js';
+import { completenessLabel } from '../../brief/completeness-labels.js';
 
 export const meta = schema;
 
@@ -40,7 +41,7 @@ export function render() {
   const cls = c.missing.length === 0 ? 'ok' : c.missing.length <= 3 ? 'warn' : 'bad';
   const missing = c.missing.length
     ? `<details class="missing"><summary>Faltan ${c.missing.length} requisitos para el brief completo</summary>
-        <ul>${c.missing.map((k) => `<li>${escapeHtml(k)}</li>`).join('')}</ul></details>`
+        <ul>${c.missing.map((k) => `<li>${escapeHtml(completenessLabel(k))}</li>`).join('')}</ul></details>`
     : '<p class="brief-ready">Brief completo. Listo para ir a ejecutar el test.</p>';
 
   return `
