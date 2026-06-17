@@ -7,6 +7,9 @@ describe('detectBias — 7 sesgos cognitivos', () => {
   it('afecto: "¿te parece fácil X?"', () => {
     expect(idsOf('¿Te parece fácil el flujo?')).toContain('afecto');
   });
+  it('afecto: "¿no te parece confuso X?" (sinónimo de difícil)', () => {
+    expect(idsOf('¿No te parece confuso que te pidan subir el documento acá?')).toContain('afecto');
+  });
   it('confirmación: "qué te pareció la solución que te dimos"', () => {
     expect(idsOf('¿Qué te pareció la solución que te dimos?')).toContain('confirmacion');
   });

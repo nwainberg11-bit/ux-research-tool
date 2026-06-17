@@ -20,7 +20,7 @@ const PATTERNS = [
     id: 'afecto',
     kind: 'sesgo',
     label: 'Heurística del afecto',
-    re: /(¿te parece (fácil|difícil|claro|mejor|peor|bueno|malo|lindo|feo)|¿te gusta|¿qué opinás de|¿qué te parece (la|el|esto|esta))/i,
+    re: /(te parece (fácil|difícil|claro|confuso|complicado|sencillo|simple|intuitivo|mejor|peor|bueno|malo|lindo|feo)|¿te gusta|¿qué opinás de|¿qué te parece (la|el|esto|esta))/i,
     message:
       'Heurística del afecto: la pregunta busca opinión/emoción en primera persona. Reformulá en tercera persona y sobre un parámetro funcional (claridad, comprensión, utilidad).'
   },
@@ -78,7 +78,7 @@ const PATTERNS = [
     id: 'cerrada',
     kind: 'mala_practica',
     label: 'Pregunta cerrada sí/no',
-    re: /(¿entendés (la|el|esta|esto)\?|¿lo entendés\?|¿te queda claro\?|¿es claro\?|¿es fácil\?|¿es difícil\?)/i,
+    re: /(¿entendés (la|el|esta|esto)\?|¿lo entendés\?|¿te queda claro\?|¿es claro\?|¿es fácil\?|¿es difícil\?|¿es confuso\?|¿es complicado\?|¿es sencillo\?|¿es intuitivo\?)/i,
     message:
       'Pregunta cerrada (sí/no): no genera información cualitativa accionable. Reformulá abierta: "¿Qué entendés de…?", "¿Qué tan clara/fácil es…?".'
   },
