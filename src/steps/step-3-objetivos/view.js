@@ -9,13 +9,17 @@ import { buildCoachPrompt } from '../../coach/prompts.js';
 
 export const meta = schema;
 
-function renderItem(text, idx) {
+function bloomBadgeHtml(text) {
   const r = checkBloomVerb(text);
   const badge = r.hasBloomVerb
     ? `<span class="bloom-badge ok">${escapeHtml(r.levelLabel)}</span>`
     : text
       ? `<span class="bloom-badge warn">sin verbo Bloom</span>`
       : '';
+  return `${badge}<small class="hint">${escapeHtml(r.message)}</small>`;
+}
+
+function renderItem(text, idx) {
   return `
     <li class="objective-item" data-idx="${idx}">
       <div class="objective-row">
@@ -25,8 +29,7 @@ function renderItem(text, idx) {
         <button class="icon-btn" data-remove="${idx}" title="Quitar">×</button>
       </div>
       <div class="objective-meta">
-        ${badge}
-        <small class="hint">${escapeHtml(r.message)}</small>
+        <span data-bloom-badge="${idx}">${bloomBadgeHtml(text)}</span>
         <button class="coach-btn small" data-eval-objective="${idx}">Evaluar con coach</button>
       </div>
       <div class="coach-panel" data-coach-objective="${idx}" hidden></div>
@@ -72,6 +75,8 @@ export function bind(host, ctx) {
       while (next.length <= idx) next.push('');
       next[idx] = el.value;
       writeItems(next);
+      const badge = host.querySelector(`[data-bloom-badge="${idx}"]`);
+      if (badge) badge.innerHTML = bloomBadgeHtml(el.value);
     });
   });
 
