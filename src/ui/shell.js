@@ -97,6 +97,10 @@ export function mount(root) {
     root.innerHTML = `
       <div class="layout">
         <aside class="sidebar">
+          <a href="https://nicowainberg.netlify.app" class="back-to-portfolio">
+            <span class="back-arrow">←</span>
+            <span class="back-text"><strong>Nico Wainberg</strong><small>UX Coach Ontológico</small></span>
+          </a>
           <div class="brand">UX Research Coach <span class="tag">v2</span></div>
           <button id="btn-new-case" class="new-case-btn">+ Nuevo caso</button>
           <button id="btn-view-case" class="view-case-btn">Ver el caso</button>

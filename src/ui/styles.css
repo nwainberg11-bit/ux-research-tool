@@ -65,6 +65,41 @@ body {
   overflow-y: auto;
 }
 
+.back-to-portfolio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent-dim);
+  border: 1px solid rgba(212,240,100,0.3);
+  border-radius: var(--radius);
+  text-decoration: none;
+  padding: 9px 14px;
+  margin: 0 22px 18px;
+  transition: all 150ms var(--ease);
+}
+.back-to-portfolio:hover {
+  border-color: var(--accent);
+  background: rgba(212,240,100,0.18);
+  transform: translateY(-1px);
+}
+.back-arrow { font-size: 14px; color: var(--accent); line-height: 1; }
+.back-text { display: flex; flex-direction: column; gap: 2px; }
+.back-text strong {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-1);
+  font-style: normal;
+}
+.back-text small {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
 .brand {
   font-family: var(--font-display);
   font-size: 1.35rem;
