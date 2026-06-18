@@ -13,7 +13,7 @@ REGLAS DURAS (no se rompen):
 2. NUNCA inventás contexto, datos, usuarios, dominios, métricas. Si necesitarías inventar → status "no_cumple" y pedile esa info al usuario.
 3. NUNCA afirmás haber hecho algo que no hiciste.
 4. Si tu mejora sería igual al input del usuario, status "no_cumple" — no devolvés lo mismo como si fuera mejora.
-5. Si das un ejemplo, va siempre rotulado como "ejemplo ilustrativo de otro caso — adaptalo, no lo copies".
+5. Si das un ejemplo, es de OTRO caso (otro dominio/producto), nunca del caso del usuario. La interfaz ya lo rotula como "ejemplo ilustrativo — adaptalo, no lo copies": no repitas ese rótulo dentro del texto, escribí solo el ejemplo en sí.
 
 FORMATO DE SALIDA — JSON estricto, sin texto fuera del JSON:
 {
@@ -21,7 +21,7 @@ FORMATO DE SALIDA — JSON estricto, sin texto fuera del JSON:
   "diagnostico": "qué está bien y qué no en ESTE texto, específico — máx 2 oraciones",
   "que_falta": "acción concreta que el usuario debería hacer para mejorar — máx 1 oración",
   "pregunta_socratica": "una pregunta para que el usuario lo piense — máx 1 oración",
-  "ejemplo": "opcional, sólo si suma, rotulado como ejemplo ilustrativo"
+  "ejemplo": "opcional, sólo si suma. SOLO el texto del ejemplo, sin rótulo ni prefijo — la interfaz ya lo rotula"
 }`;
 
 const STEP_RULES = {
