@@ -58,11 +58,12 @@ function renderFooter() {
     <button id="btn-next" ${n ? '' : 'disabled'}>Siguiente →</button>`;
 }
 
-function buildCtx(stepN, refresh) {
+function buildCtx(stepN, refresh, returnStep) {
   const dataOf = (n) => getState().steps[String(n)] || {};
   return {
     stepN,
     refresh,
+    returnStep,
     getValue: (fid) => dataOf(stepN)[fid],
     setValue: (fid, val) => setStepData(stepN, { [fid]: val }),
     getContext: () => {
@@ -83,8 +84,11 @@ function buildCtx(stepN, refresh) {
 }
 
 export function mount(root) {
+  let lastRealStep = '1'; // último paso 1-8/brief visitado, para volver tras editar el brief inicial
+
   function render() {
     const cur = getState().currentStep;
+    if (cur !== 'intro') lastRealStep = cur;
     const view = views[cur];
     const stepBody = view
       ? view.render(getState().steps[cur] || {})
@@ -95,6 +99,7 @@ export function mount(root) {
         <aside class="sidebar">
           <div class="brand">UX Research Coach <span class="tag">v2</span></div>
           <button id="btn-new-case" class="new-case-btn">+ Nuevo caso</button>
+          <button id="btn-view-case" class="view-case-btn">Ver el caso</button>
           ${renderSidebar(cur)}
         </aside>
         <main class="content">
@@ -109,6 +114,7 @@ export function mount(root) {
     );
     root.querySelector('#btn-prev')?.addEventListener('click', goPrev);
     root.querySelector('#btn-next')?.addEventListener('click', goNext);
+    root.querySelector('#btn-view-case')?.addEventListener('click', () => goToStep('intro'));
 
     const modal = root.querySelector('#modal-new-case');
     const closeModal = () => (modal.hidden = true);
@@ -128,7 +134,7 @@ export function mount(root) {
         stepEl.innerHTML = view.render(getState().steps[cur] || {});
         view.bind(stepEl, buildCtx(cur, refresh));
       };
-      view.bind(stepEl, buildCtx(cur, refresh));
+      view.bind(stepEl, buildCtx(cur, refresh, lastRealStep));
     }
   }
 

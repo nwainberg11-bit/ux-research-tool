@@ -242,13 +242,16 @@ button:disabled { opacity: .35; cursor: not-allowed; }
 .coach-btn:hover { background: var(--coach-dim); color: var(--coach); }
 .coach-btn.small { padding: 4px 9px; }
 
-.new-case-btn {
+.new-case-btn,
+.view-case-btn {
   display: block;
   width: calc(100% - 44px);
-  margin: 0 22px 24px;
+  margin: 0 22px 10px;
   font-size: 9px;
   padding: 8px 0;
 }
+.new-case-btn { margin-bottom: 10px; }
+.view-case-btn { margin-bottom: 24px; }
 
 .intro-start-btn {
   margin-top: 20px;
