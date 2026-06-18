@@ -103,7 +103,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const geminiBody = {
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -111,7 +111,8 @@ export default async function handler(req, res) {
       generationConfig: {
         temperature: 0.4,
         maxOutputTokens: 1024,
-        responseMimeType: 'application/json'
+        responseMimeType: 'application/json',
+        thinkingConfig: { thinkingBudget: 0 }
       }
     };
 
