@@ -36,6 +36,20 @@ function renderPlaceholder(current) {
     <p class="placeholder">Este paso aún no tiene vista cableada (${fieldsTxt}).</p>`;
 }
 
+function renderNewCaseModal() {
+  return `
+    <div class="modal-overlay" id="modal-new-case" hidden>
+      <div class="modal-card">
+        <h3>¿Empezar un caso nuevo?</h3>
+        <p>Esto borra todo lo cargado en el caso actual — los 8 pasos y el brief inicial. No se puede deshacer.</p>
+        <div class="modal-actions">
+          <button id="modal-cancel" class="modal-btn-ghost">Cancelar</button>
+          <button id="modal-confirm" class="modal-btn-danger">Sí, empezar de nuevo</button>
+        </div>
+      </div>
+    </div>`;
+}
+
 function renderFooter() {
   const p = prevKey();
   const n = nextKey();
@@ -87,17 +101,25 @@ export function mount(root) {
           <section class="step">${stepBody}</section>
           ${cur === 'intro' ? '' : `<footer class="nav-footer">${renderFooter()}</footer>`}
         </main>
-      </div>`;
+      </div>
+      ${renderNewCaseModal()}`;
 
     root.querySelectorAll('.nav-item').forEach((el) =>
       el.addEventListener('click', () => goToStep(el.dataset.step))
     );
     root.querySelector('#btn-prev')?.addEventListener('click', goPrev);
     root.querySelector('#btn-next')?.addEventListener('click', goNext);
-    root.querySelector('#btn-new-case')?.addEventListener('click', () => {
-      if (window.confirm('Esto borra el caso actual (todos los pasos cargados). ¿Empezar uno nuevo?')) {
-        resetAll();
-      }
+
+    const modal = root.querySelector('#modal-new-case');
+    const closeModal = () => (modal.hidden = true);
+    root.querySelector('#btn-new-case')?.addEventListener('click', () => (modal.hidden = false));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+    root.querySelector('#modal-cancel')?.addEventListener('click', closeModal);
+    root.querySelector('#modal-confirm')?.addEventListener('click', () => {
+      closeModal();
+      resetAll();
     });
 
     if (view) {
