@@ -4,7 +4,7 @@
 const KEY = 'uxrc_v2_state';
 
 const initial = {
-  currentStep: '1',          // string: '1'..'8' | 'brief'
+  currentStep: 'intro',      // string: 'intro' | '1'..'8' | 'brief'
   steps: {},                 // { [stepN]: { ...campos } } — se llena en F2/F3
   meta: { version: '2.0.0-f0', updatedAt: null }
 };

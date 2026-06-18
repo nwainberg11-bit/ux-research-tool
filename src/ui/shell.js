@@ -2,7 +2,7 @@
 // Si un paso tiene view.js, se delega a su render/bind; si no, placeholder F0.
 import { PHASES, STEP_BY_N } from '../source/steps.js';
 import { schemas, views } from '../steps/index.js';
-import { getState, goToStep, setStepData, subscribe } from '../state/store.js';
+import { getState, goToStep, setStepData, subscribe, resetAll } from '../state/store.js';
 import { goPrev, goNext, prevKey, nextKey } from './nav.js';
 
 function renderSidebar(current) {
@@ -52,8 +52,11 @@ function buildCtx(stepN, refresh) {
     getValue: (fid) => dataOf(stepN)[fid],
     setValue: (fid, val) => setStepData(stepN, { [fid]: val }),
     getContext: () => {
-      // Contexto para el coach: snapshot de los pasos previos completados.
+      // Contexto para el coach: brief inicial de la empresa (siempre, si existe)
+      // + snapshot de los pasos previos completados.
       const out = {};
+      const intro = dataOf('intro').texto;
+      if (intro && intro.trim()) out.brief_inicial = intro;
       ['1', '2', '3', '4', '5', '6', '7', '8']
         .filter((k) => k !== String(stepN))
         .forEach((k) => {
@@ -77,11 +80,12 @@ export function mount(root) {
       <div class="layout">
         <aside class="sidebar">
           <div class="brand">UX Research Coach <span class="tag">v2</span></div>
+          <button id="btn-new-case" class="new-case-btn">+ Nuevo caso</button>
           ${renderSidebar(cur)}
         </aside>
         <main class="content">
           <section class="step">${stepBody}</section>
-          <footer class="nav-footer">${renderFooter()}</footer>
+          ${cur === 'intro' ? '' : `<footer class="nav-footer">${renderFooter()}</footer>`}
         </main>
       </div>`;
 
@@ -90,6 +94,11 @@ export function mount(root) {
     );
     root.querySelector('#btn-prev')?.addEventListener('click', goPrev);
     root.querySelector('#btn-next')?.addEventListener('click', goNext);
+    root.querySelector('#btn-new-case')?.addEventListener('click', () => {
+      if (window.confirm('Esto borra el caso actual (todos los pasos cargados). ¿Empezar uno nuevo?')) {
+        resetAll();
+      }
+    });
 
     if (view) {
       const stepEl = root.querySelector('.step');

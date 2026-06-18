@@ -85,11 +85,11 @@ export function buildCoachPrompt({ step, field, value, context }) {
   const systemPrompt = `${BASE_SYSTEM}\n\n${fieldRules}`.slice(0, 4000);
 
   const contextBlock = context && Object.keys(context).length
-    ? `\n\nContexto de pasos previos (no lo reescribas, sólo úsalo para coherencia):\n${JSON.stringify(
+    ? `\n\nContexto disponible (brief inicial de la empresa + pasos previos — no lo reescribas, sólo úsalo para coherencia):\n${JSON.stringify(
         context,
         null,
         2
-      ).slice(0, 2000)}`
+      ).slice(0, 3000)}`
     : '';
 
   const prompt =
