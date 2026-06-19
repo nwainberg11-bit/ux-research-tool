@@ -89,11 +89,15 @@ export default async function handler(req, res) {
       body: JSON.stringify(body),
       redirect: 'manual'
     });
+    const debug = { step1Status: r.status, step1Location: r.headers.get('location') };
     if (r.status >= 300 && r.status < 400 && r.headers.get('location')) {
       r = await fetch(r.headers.get('location'));
     }
-    return res.status(r.ok ? 200 : 502).json({ ok: r.ok });
-  } catch {
-    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook' });
+    const text = await r.text();
+    return res
+      .status(r.ok ? 200 : 502)
+      .json({ ok: r.ok, debug, step2Status: r.status, step2Body: text.slice(0, 200) });
+  } catch (err) {
+    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook', debugMessage: err.message });
   }
 }
