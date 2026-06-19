@@ -24,8 +24,6 @@ function renderObjective(text, idx) {
       </div>`;
   }
 
-  // Si está vacío, pre-rellenamos con la forma del criterio (editable).
-  const initial = data.criterion ?? param.criterionForm;
   const thresholdBadge = param.binary
     ? `<span class="threshold-fixed">Umbral fijo: ${SUCCESS_THRESHOLD}% — no editable</span>`
     : `<span class="threshold-fixed soft">Sin criterio binario — definí qué vas a explorar</span>`;
@@ -36,10 +34,12 @@ function renderObjective(text, idx) {
         <span class="chain-label">Objetivo ${idx + 1}</span>
         <p>${escapeHtml(text)}</p>
         <p class="chain-param">Parámetro: <strong>${escapeHtml(param.label)}</strong></p>
+        <p class="criterion-form-hint">Forma esperada: <em>${escapeHtml(param.criterionForm)}</em></p>
       </div>
       <div class="chain-control">
         <label for="c-${idx}">Criterio de éxito</label>
-        <textarea id="c-${idx}" data-criterion-for="${idx}" rows="3">${escapeHtml(initial)}</textarea>
+        <textarea id="c-${idx}" data-criterion-for="${idx}" rows="3"
+          placeholder="${escapeHtml(param.criterionForm)}">${escapeHtml(data.criterion || '')}</textarea>
         <div class="criterion-meta">
           ${thresholdBadge}
           <small class="hint">Concreto, no interpretable. Sin "si ve" / "si nota" — mide algo medible.</small>

@@ -12,14 +12,18 @@ function hipotesisAvisoHtml(active) {
     : '';
 }
 
+function lowerFirst(s) {
+  return s ? s.charAt(0).toLowerCase() + s.slice(1) : s;
+}
+
 function autoParagraph(d) {
   const partes = [];
   if (d.quien_que_donde) partes.push(d.quien_que_donde.trim());
   if (d.por_que) {
     const prefix = d.por_que_hipotesis ? 'Hipótesis (a validar): ' : 'Esto sucede porque ';
-    partes.push(prefix + d.por_que.trim());
+    partes.push(prefix + lowerFirst(d.por_que.trim()));
   }
-  if (d.que_provoca) partes.push('Esto provoca ' + d.que_provoca.trim());
+  if (d.que_provoca) partes.push('Esto provoca ' + lowerFirst(d.que_provoca.trim()));
   if (d.evidencia) partes.push('Evidencia: ' + d.evidencia.trim());
   return partes.join('. ').replace(/\.\.+/g, '.');
 }

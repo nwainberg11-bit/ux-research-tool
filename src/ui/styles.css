@@ -608,6 +608,7 @@ table.compare td { color: var(--text-2); }
 .chain-objective p { margin: 4px 0; line-height: 1.55; color: var(--text-1); }
 .chain-param { color: var(--text-2); font-size: 0.82rem; margin-top: 10px; }
 .chain-param.warn { color: var(--warn); }
+.criterion-form-hint { color: var(--text-3); font-size: 0.78rem; margin-top: 6px; font-style: italic; }
 .param-def {
   margin-top: 12px;
   padding: 10px 14px;
