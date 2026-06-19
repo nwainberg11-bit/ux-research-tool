@@ -114,9 +114,10 @@ describe('briefToMarkdown', () => {
     expect(md).toContain('## Fase 1 · El problema');
     expect(md).toContain('## Fase 2 · Los objetivos');
     expect(md).toContain('## Fase 3 · El test');
-    expect(md).toContain('Objetivo 1');
+    expect(md).toContain('| Objetivo específico | Qué se mide | Criterio de éxito | Tarea o pregunta |');
+    expect(md).toContain('Identificar si el usuario reconoce el primer paso del flujo.');
     expect(md).toContain('Encontrabilidad / eficacia');
-    expect(md).toContain('umbral fijo 78%');
+    expect(md).toContain('78% fijo');
     expect(md).toContain('probá el escenario');
   });
 

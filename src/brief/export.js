@@ -76,29 +76,21 @@ export function briefToMarkdown(brief) {
     lines.push('_Sin objetivos específicos cargados._');
     lines.push('');
   } else {
-    brief.objetivos.especificos.forEach((o, i) => {
-      lines.push(`#### Objetivo ${i + 1}`);
-      lines.push('');
-      lines.push(`> ${o.text}`);
-      lines.push('');
-      pushKV(lines, 'Parámetro', o.parameter?.label || '_(sin parámetro asignado)_');
-      if (o.criterion) {
-        const fixed = o.thresholdFixed
-          ? ` _(umbral fijo ${brief.meta.thresholdFixed}%, no editable)_`
-          : '';
-        pushKV(lines, 'Criterio de éxito', `${o.criterion}${fixed}`);
-      }
-      if (o.questions.length) {
-        lines.push('');
-        lines.push('**Preguntas:**');
-        o.questions.forEach((q) => lines.push(`- ${q}`));
-        lines.push('');
-      } else {
-        lines.push('');
-        lines.push('_Sin preguntas cargadas para este objetivo._');
-        lines.push('');
-      }
+    lines.push('| Objetivo específico | Qué se mide | Criterio de éxito | Tarea o pregunta |');
+    lines.push('|---|---|---|---|');
+    brief.objetivos.especificos.forEach((o) => {
+      const lvl = o.bloomLevel ? ` _(${o.bloomLevel})_` : '';
+      const param = o.parameter?.label || '_(sin parámetro)_';
+      const fixed = o.thresholdFixed ? ` _(78% fijo)_` : '';
+      const criterion = o.criterion ? `${cell(o.criterion)}${fixed}` : '_(sin criterio)_';
+      const questions = o.questions.length ? o.questions : [''];
+      questions.forEach((q) => {
+        lines.push(
+          `| ${cell(o.text)}${lvl} | ${param} | ${criterion} | ${cell(q) || '_Sin preguntas cargadas._'} |`
+        );
+      });
     });
+    lines.push('');
   }
 
   lines.push('### Escenario');
@@ -132,6 +124,10 @@ export function briefToMarkdown(brief) {
 function pushKV(lines, key, value) {
   if (!value) return;
   lines.push(`**${key}.** ${value}`);
+}
+
+function cell(v) {
+  return String(v ?? '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
 }
 
 function formatDate(iso) {
