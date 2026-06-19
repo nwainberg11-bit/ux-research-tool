@@ -84,8 +84,9 @@ export default async function handler(req, res) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
-    return res.status(r.ok ? 200 : 502).json({ ok: r.ok });
-  } catch {
-    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook' });
+    const text = await r.text();
+    return res.status(r.ok ? 200 : 502).json({ ok: r.ok, debugStatus: r.status, debugBody: text.slice(0, 300) });
+  } catch (err) {
+    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook', debugMessage: err.message });
   }
 }
