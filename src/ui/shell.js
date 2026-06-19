@@ -4,6 +4,7 @@ import { PHASES, STEP_BY_N } from '../source/steps.js';
 import { schemas, views } from '../steps/index.js';
 import { getState, goToStep, setStepData, subscribe, resetAll } from '../state/store.js';
 import { goPrev, goNext, prevKey, nextKey } from './nav.js';
+import { trackEvent } from '../analytics/track.js';
 
 function renderSidebar(current) {
   return PHASES.map((ph) => {
@@ -88,6 +89,7 @@ export function mount(root) {
 
   function render() {
     const cur = getState().currentStep;
+    trackEvent('step_view', { step: cur });
     if (cur !== 'intro') lastRealStep = cur;
     const view = views[cur];
     const stepBody = view

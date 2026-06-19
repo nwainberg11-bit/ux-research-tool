@@ -19,6 +19,15 @@ export default {
       required: false,
       ai: false,
       rows: 12
+    },
+    {
+      id: 'email',
+      type: 'text',
+      label: 'Tu mail',
+      hint: 'Dejá tu mail para recibir tu brief armado. Es información privada, usada únicamente para esto.',
+      placeholder: 'tu@mail.com',
+      required: false,
+      ai: false
     }
   ]
 };
