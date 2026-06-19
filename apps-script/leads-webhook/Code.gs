@@ -8,6 +8,7 @@
 // Acceso "Cualquier usuario" > copiar la URL > pegarla en Vercel como
 // APPS_SCRIPT_WEBHOOK_URL.
 
+const SPREADSHEET_ID = '1vQgEvSj2EsNIkHW3pyDd2d0gO4OpJnD_ZEdtOfUi3f4';
 const LEADS_SHEET = 'Leads';
 const EVENTS_SHEET = 'Events';
 
@@ -52,7 +53,7 @@ function logEvent(body) {
 }
 
 function appendRow(sheetName, headers, row) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(sheetName);
   if (!sheet) {
     sheet = ss.insertSheet(sheetName);

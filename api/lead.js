@@ -2,6 +2,13 @@
 // Proxy entre el frontend y el webhook de Apps Script (envío de mail + Sheet de leads/eventos).
 // La URL del webhook vive en Vercel env vars — nunca llega al cliente.
 // Mismo patrón de endurecimiento que api/coach.js: rate-limit + validación de input.
+//
+// PAUSADO (2026-06-19): Google bloquea las llamadas servidor-a-servidor desde
+// IPs de datacenter (Vercel/AWS) hacia script.google.com/.../exec con un 404 —
+// no es un bug de este código, es un bloqueo del lado de Google. Mientras no
+// se resuelva (alternativa: Resend + Google Sheets API con cuenta de servicio),
+// este endpoint no funciona en producción. No exponer la URL al cliente como
+// workaround — fue evaluado y descartado por riesgo de abuso del mail.
 
 const MAX_MARKDOWN_CHARS = 20_000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -80,24 +87,20 @@ export default async function handler(req, res) {
 
   try {
     // Apps Script /exec responde con un 302 a script.googleusercontent.com que
-    // solo acepta GET. Seguimos el redirect a mano (en vez de dejar que fetch
-    // lo siga automático) porque en runtime de Vercel el follow automático
-    // termina pegándole con POST y devuelve 404/405.
+    // solo acepta GET — seguimos el redirect a mano en vez de dejar que fetch
+    // lo siga automático. Aun así, Google devuelve 404 en el primer salto
+    // cuando la llamada sale de una IP de datacenter (ver nota arriba).
     let r = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
       redirect: 'manual'
     });
-    const debug = { step1Status: r.status, step1Location: r.headers.get('location') };
     if (r.status >= 300 && r.status < 400 && r.headers.get('location')) {
       r = await fetch(r.headers.get('location'));
     }
-    const text = await r.text();
-    return res
-      .status(r.ok ? 200 : 502)
-      .json({ ok: r.ok, debug, step2Status: r.status, step2Body: text.slice(0, 200) });
-  } catch (err) {
-    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook', debugMessage: err.message });
+    return res.status(r.ok ? 200 : 502).json({ ok: r.ok });
+  } catch {
+    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook' });
   }
 }

@@ -7,7 +7,13 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    target: 'es2020'
+    target: 'es2020',
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+        panel: 'panel.html'
+      }
+    }
   },
   server: { port: 5173, open: true }
 });
