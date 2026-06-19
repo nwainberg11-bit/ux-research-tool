@@ -10,12 +10,12 @@
 // este endpoint no funciona en producción. No exponer la URL al cliente como
 // workaround — fue evaluado y descartado por riesgo de abuso del mail.
 
-const MAX_MARKDOWN_CHARS = 20_000;
+const MAX_PDF_BASE64_CHARS = 2_000_000; // ~1.5MB de PDF, de sobra para un brief de texto
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 30;
 
 export const config = {
-  api: { bodyParser: { sizeLimit: '64kb' } }
+  api: { bodyParser: { sizeLimit: '3mb' } }
 };
 
 const rateStore = new Map();
@@ -71,11 +71,11 @@ export default async function handler(req, res) {
     if (!isValidEmail(body.email)) {
       return res.status(400).json({ error: 'Mail inválido' });
     }
-    if (typeof body.markdown !== 'string' || !body.markdown.trim()) {
-      return res.status(400).json({ error: 'Falta el brief' });
+    if (typeof body.pdfBase64 !== 'string' || !body.pdfBase64.trim()) {
+      return res.status(400).json({ error: 'Falta el PDF del brief' });
     }
-    if (body.markdown.length > MAX_MARKDOWN_CHARS) {
-      return res.status(400).json({ error: `brief excede ${MAX_MARKDOWN_CHARS} caracteres` });
+    if (body.pdfBase64.length > MAX_PDF_BASE64_CHARS) {
+      return res.status(400).json({ error: 'El PDF es demasiado pesado' });
     }
   } else if (body.action === 'event') {
     if (typeof body.type !== 'string' || !body.type.trim()) {

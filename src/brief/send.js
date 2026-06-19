@@ -7,18 +7,27 @@ export function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
 }
 
+export function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+}
+
 /**
- * @param {{ email: string, markdown: string, sessionId: string }} payload
+ * @param {{ email: string, pdfBase64: string, sessionId: string }} payload
  * @returns {Promise<{ ok: boolean }>}
  */
-export async function sendBriefByMail({ email, markdown, sessionId }) {
+export async function sendBriefByMail({ email, pdfBase64, sessionId }) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
   try {
     const res = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'send_brief', email: email.trim(), markdown, sessionId }),
+      body: JSON.stringify({ action: 'send_brief', email: email.trim(), pdfBase64, sessionId }),
       signal: ctrl.signal
     });
     if (!res.ok) return { ok: false };

@@ -4,9 +4,8 @@ import schema from './schema.js';
 import { escapeHtml } from '../../ui/fields.js';
 import { getState, setStepData } from '../../state/store.js';
 import { assembleBrief } from '../../brief/assemble.js';
-import { briefToMarkdown } from '../../brief/export.js';
 import { completenessLabel } from '../../brief/completeness-labels.js';
-import { sendBriefByMail, isValidEmail } from '../../brief/send.js';
+import { sendBriefByMail, isValidEmail, blobToBase64 } from '../../brief/send.js';
 import { trackEvent, getSessionId } from '../../analytics/track.js';
 
 export const meta = schema;
@@ -142,8 +141,6 @@ function kv(k, v) {
 }
 
 export function bind(host) {
-  const buildMd = () => briefToMarkdown(assembleBrief(getState()));
-
   const gate = host.querySelector('.brief-mail-gate');
   const emailInput = host.querySelector('#brief-email');
   const sendBtn = host.querySelector('#brief-send');
@@ -168,8 +165,10 @@ export function bind(host) {
     sendBtn.textContent = 'Enviando…';
     msg.hidden = true;
 
-    const md = buildMd();
-    const { ok } = await sendBriefByMail({ email, markdown: md, sessionId: getSessionId() });
+    const { briefToPdf } = await import('../../brief/export-pdf.js');
+    const pdfBlob = briefToPdf(assembleBrief(getState()));
+    const pdfBase64 = await blobToBase64(pdfBlob);
+    const { ok } = await sendBriefByMail({ email, pdfBase64, sessionId: getSessionId() });
 
     sendBtn.disabled = false;
     sendBtn.textContent = 'Enviar brief por mail';

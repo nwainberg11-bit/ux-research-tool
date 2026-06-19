@@ -28,12 +28,22 @@ function doPost(e) {
 
 function sendBrief(body) {
   const email = String(body.email || '').trim();
-  const markdown = String(body.markdown || '');
+  const pdfBlob = Utilities.newBlob(
+    Utilities.base64Decode(body.pdfBase64 || ''),
+    'application/pdf',
+    'brief-ux-research.pdf'
+  );
 
   MailApp.sendEmail({
     to: email,
     subject: 'Tu brief de investigación UX',
-    body: markdown
+    body:
+      '¡Gracias por usar el UX Research Coach!\n\n' +
+      'Te dejamos adjunto el brief que armaste, listo para compartir con tu equipo ' +
+      'o llevar a la ejecución del test.\n\n' +
+      'Si te sirvió, contanos qué te pareció — cualquier feedback ayuda a mejorar la herramienta.\n\n' +
+      '— UX Research Coach',
+    attachments: [pdfBlob]
   });
 
   appendRow(LEADS_SHEET, ['timestamp', 'email', 'sessionId'], [
