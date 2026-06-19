@@ -79,14 +79,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    const r = await fetch(webhookUrl, {
+    // Apps Script /exec responde con un 302 a script.googleusercontent.com que
+    // solo acepta GET. Seguimos el redirect a mano (en vez de dejar que fetch
+    // lo siga automático) porque en runtime de Vercel el follow automático
+    // termina pegándole con POST y devuelve 404/405.
+    let r = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
+      redirect: 'manual'
     });
-    const text = await r.text();
-    return res.status(r.ok ? 200 : 502).json({ ok: r.ok, debugStatus: r.status, debugBody: text.slice(0, 300) });
-  } catch (err) {
-    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook', debugMessage: err.message });
+    if (r.status >= 300 && r.status < 400 && r.headers.get('location')) {
+      r = await fetch(r.headers.get('location'));
+    }
+    return res.status(r.ok ? 200 : 502).json({ ok: r.ok });
+  } catch {
+    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook' });
   }
 }
