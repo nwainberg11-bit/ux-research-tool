@@ -10,6 +10,7 @@
 const SPREADSHEET_ID = '1vQgEvSj2EsNIkHW3pyDd2d0gO4OpJnD_ZEdtOfUi3f4';
 const LEADS_SHEET = 'Leads';
 const EVENTS_SHEET = 'Events';
+const SENDER_ALIAS = 'ux.nicowainberg@gmail.com'; // debe estar en GmailApp.getAliases() (verificado en "Enviar correo como")
 
 function doPost(e) {
   const body = JSON.parse(e.postData.contents || '{}');
@@ -33,19 +34,19 @@ function sendBrief(body) {
     'brief-ux-research.pdf'
   );
 
-  MailApp.sendEmail({
-    to: email,
-    from: 'ux.nicowainberg@gmail.com', // alias verificado en "Enviar correo como" de la cuenta dueña del script
-    name: 'UX Research Coach',
-    subject: 'Tu brief de investigación UX',
-    body:
-      '¡Gracias por usar el UX Research Coach!\n\n' +
-      'Te dejamos adjunto el brief que armaste, listo para compartir con tu equipo ' +
-      'o llevar a la ejecución del test.\n\n' +
-      'Si te sirvió, contanos qué te pareció — cualquier feedback ayuda a mejorar la herramienta.\n\n' +
-      '— UX Research Coach',
-    attachments: [pdfBlob]
-  });
+  // MailApp.sendEmail no soporta "from" (solo GmailApp lo soporta, y exige que
+  // la dirección esté en GmailApp.getAliases() — alias verificado).
+  GmailApp.sendEmail(email, 'Tu brief de investigación UX',
+    '¡Gracias por usar el UX Research Coach!\n\n' +
+    'Te dejamos adjunto el brief que armaste, listo para compartir con tu equipo ' +
+    'o llevar a la ejecución del test.\n\n' +
+    'Si te sirvió, contanos qué te pareció — cualquier feedback ayuda a mejorar la herramienta.\n\n' +
+    '— UX Research Coach',
+    {
+      from: SENDER_ALIAS,
+      name: 'UX Research Coach',
+      attachments: [pdfBlob]
+    });
 
   appendRow(LEADS_SHEET, ['timestamp', 'email', 'sessionId'], [
     new Date(),
