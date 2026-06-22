@@ -3,10 +3,9 @@
 //   - send_brief: manda el brief por mail y loguea el lead (mail + fecha, sin el contenido del brief).
 //   - event: loguea un evento de uso anónimo (sessionId + tipo + paso).
 //
-// Deploy: Extensiones > Apps Script en una Sheet nueva > pegar este código >
-// Implementar > Nueva implementación > Aplicación web > Ejecutar como "Yo",
-// Acceso "Cualquier usuario" > copiar la URL > pegarla en Vercel como
-// APPS_SCRIPT_WEBHOOK_URL.
+// Deploy: clasp push && clasp deploy -i <deploymentId> desde esta carpeta
+// (ver .clasp.json). La URL del Web App ya está en Vercel como
+// APPS_SCRIPT_WEBHOOK_URL — no cambia al redeployar sobre el mismo deploymentId.
 
 const SPREADSHEET_ID = '1vQgEvSj2EsNIkHW3pyDd2d0gO4OpJnD_ZEdtOfUi3f4';
 const LEADS_SHEET = 'Leads';
