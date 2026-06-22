@@ -98,6 +98,10 @@ export function mount(root) {
 
     root.innerHTML = `
       <div class="layout">
+        <header class="mobile-topbar">
+          <button id="nav-toggle" class="nav-toggle" aria-label="Abrir menú">☰</button>
+          <span class="brand">UX Coach</span>
+        </header>
         <aside class="sidebar">
           <a href="https://nicowainberg.netlify.app" class="back-to-portfolio">
             <span class="back-arrow">←</span>
@@ -108,12 +112,25 @@ export function mount(root) {
           <button id="btn-view-case" class="view-case-btn">Ver el caso</button>
           ${renderSidebar(cur)}
         </aside>
+        <div class="sidebar-overlay" id="sidebar-overlay" hidden></div>
         <main class="content">
           <section class="step">${stepBody}</section>
           ${cur === 'intro' ? '' : `<footer class="nav-footer">${renderFooter()}</footer>`}
         </main>
       </div>
       ${renderNewCaseModal()}`;
+
+    const sidebarEl = root.querySelector('.sidebar');
+    const overlayEl = root.querySelector('#sidebar-overlay');
+    const closeDrawer = () => {
+      sidebarEl.classList.remove('nav-open');
+      overlayEl.hidden = true;
+    };
+    root.querySelector('#nav-toggle')?.addEventListener('click', () => {
+      sidebarEl.classList.add('nav-open');
+      overlayEl.hidden = false;
+    });
+    overlayEl?.addEventListener('click', closeDrawer);
 
     root.querySelectorAll('.nav-item').forEach((el) =>
       el.addEventListener('click', () => goToStep(el.dataset.step))

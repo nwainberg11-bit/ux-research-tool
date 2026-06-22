@@ -26,10 +26,12 @@ function comparativeTable() {
     )
     .join('');
   return `
-    <table class="compare">
-      <thead><tr><th></th>${head}</tr></thead>
-      <tbody>${body}</tbody>
-    </table>`;
+    <div class="table-scroll">
+      <table class="compare">
+        <thead><tr><th></th>${head}</tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>`;
 }
 
 export function render(data) {

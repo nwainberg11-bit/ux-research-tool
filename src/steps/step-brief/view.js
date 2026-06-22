@@ -38,17 +38,19 @@ function renderObjectivesTable(objectives) {
     )
     .join('');
   return `
-    <table class="brief-table">
-      <thead>
-        <tr>
-          <th>Objetivo específico</th>
-          <th>Qué se mide</th>
-          <th>Criterio de éxito</th>
-          <th>Tarea o pregunta</th>
-        </tr>
-      </thead>
-      <tbody>${body}</tbody>
-    </table>`;
+    <div class="table-scroll">
+      <table class="brief-table">
+        <thead>
+          <tr>
+            <th>Objetivo específico</th>
+            <th>Qué se mide</th>
+            <th>Criterio de éxito</th>
+            <th>Tarea o pregunta</th>
+          </tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>`;
 }
 
 export function render() {

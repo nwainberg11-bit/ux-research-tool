@@ -65,6 +65,13 @@ body {
   overflow-y: auto;
 }
 
+.mobile-topbar { display: none; }
+.nav-toggle { display: none; }
+.sidebar-overlay { display: none; }
+
+/* ─── Scroll horizontal para tablas anchas en mobile ─────────────────── */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
 .back-to-portfolio {
   display: flex;
   align-items: center;
@@ -554,6 +561,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); }
   display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px;
   align-items: flex-start;
 }
+.layout-2col > * { min-width: 0; }
 @media (max-width: 1100px) { .layout-2col { grid-template-columns: 1fr; } }
 table.compare {
   width: 100%; border-collapse: collapse;
@@ -781,3 +789,70 @@ table.compare td { color: var(--text-2); }
   line-height: 1.5;
 }
 .brief-table tbody tr:nth-child(even) td { background: var(--bg-3); }
+
+/* ─── Mobile (≤768px) ────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 35;
+  }
+  .mobile-topbar .brand {
+    padding: 0;
+    border-bottom: none;
+    font-size: 1.05rem;
+  }
+
+  .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: 17px;
+    color: var(--text-1);
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(84vw, 300px);
+    transform: translateX(-100%);
+    transition: transform 220ms var(--ease);
+    z-index: 45;
+    box-shadow: 8px 0 32px rgba(0,0,0,0.45);
+  }
+  .sidebar.nav-open { transform: translateX(0); }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 40;
+  }
+  .sidebar-overlay[hidden] { display: none; }
+
+  .content { padding: 28px 18px 64px; max-width: 100%; }
+
+  h1 { font-size: 1.7rem; }
+
+  .chain-card { grid-template-columns: 1fr; gap: 14px; }
+
+  .brief-doc { padding: 18px 16px; }
+
+  table.compare th[scope="row"] { width: 76px; }
+
+  .nav-footer { flex-wrap: wrap; gap: 10px; }
+  .nav-footer button { flex: 1 1 auto; }
+}
