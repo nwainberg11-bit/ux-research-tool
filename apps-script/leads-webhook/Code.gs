@@ -36,6 +36,8 @@ function sendBrief(body) {
 
   MailApp.sendEmail({
     to: email,
+    from: 'ux.nicowainberg@gmail.com', // alias verificado en "Enviar correo como" de la cuenta dueña del script
+    name: 'UX Research Coach',
     subject: 'Tu brief de investigación UX',
     body:
       '¡Gracias por usar el UX Research Coach!\n\n' +
