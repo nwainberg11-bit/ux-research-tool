@@ -17,6 +17,30 @@ export function getSessionId() {
   }
 }
 
+export const COACH_USE_LIMIT = 3;
+
+function coachKey(step, field) {
+  return `uxrc_coach_${step}_${field}`;
+}
+
+export function getCoachUseCount(step, field) {
+  try {
+    return Number(localStorage.getItem(coachKey(step, field)) || 0);
+  } catch {
+    return 0;
+  }
+}
+
+export function incrementCoachUseCount(step, field) {
+  try {
+    const next = getCoachUseCount(step, field) + 1;
+    localStorage.setItem(coachKey(step, field), String(next));
+    return next;
+  } catch {
+    return 1;
+  }
+}
+
 export function trackSessionStart() {
   try {
     const existing = localStorage.getItem(SESSION_KEY);

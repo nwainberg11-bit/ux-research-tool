@@ -6,7 +6,7 @@ import { renderField, bindFields, escapeHtml } from '../../ui/fields.js';
 import { checkBloomVerb } from '../../coach/validators/bloom-verb.js';
 import { callCoach } from '../../coach/client.js';
 import { buildCoachPrompt } from '../../coach/prompts.js';
-import { trackEvent } from '../../analytics/track.js';
+import { trackEvent, getCoachUseCount, incrementCoachUseCount, COACH_USE_LIMIT } from '../../analytics/track.js';
 
 export const meta = schema;
 
@@ -20,6 +20,13 @@ function bloomBadgeHtml(text) {
   return `${badge}<small class="hint">${escapeHtml(r.message)}</small>`;
 }
 
+function obj3HintText(count) {
+  const remaining = COACH_USE_LIMIT - count;
+  if (remaining <= 0) return 'Límite de evaluaciones alcanzado para esta sesión.';
+  if (remaining < COACH_USE_LIMIT) return `${remaining} evaluación${remaining === 1 ? '' : 'es'} restante${remaining === 1 ? '' : 's'}.`;
+  return '';
+}
+
 function renderItem(text, idx) {
   return `
     <li class="objective-item" data-idx="${idx}">
@@ -31,7 +38,9 @@ function renderItem(text, idx) {
       </div>
       <div class="objective-meta">
         <span data-bloom-badge="${idx}">${bloomBadgeHtml(text)}</span>
-        <button class="coach-btn small" data-eval-objective="${idx}">Evaluar con coach</button>
+        <button class="coach-btn small" data-eval-objective="${idx}"
+          ${getCoachUseCount(3, `objetivo_${idx}`) >= COACH_USE_LIMIT ? 'disabled' : ''}>Evaluar con coach</button>
+        <small class="hint" data-coach-hint="${idx}">${obj3HintText(getCoachUseCount(3, `objetivo_${idx}`))}</small>
       </div>
       <div class="coach-panel" data-coach-objective="${idx}" hidden></div>
     </li>`;
@@ -112,8 +121,12 @@ export function bind(host, ctx) {
         panel.innerHTML = `<div class="coach-honest">Chequeo automático: ${escapeHtml(b.message)}</div>`;
         return;
       }
-      panel.innerHTML = '<div class="coach-loading">Evaluando…</div>';
+      const newCount = incrementCoachUseCount(3, `objetivo_${idx}`);
       trackEvent('coach_eval', { step: 3, field: 'objetivo_especifico', idx });
+      const hintEl = host.querySelector(`[data-coach-hint="${idx}"]`);
+      if (newCount >= COACH_USE_LIMIT) btn.disabled = true;
+      if (hintEl) hintEl.textContent = obj3HintText(newCount);
+      panel.innerHTML = '<div class="coach-loading">Evaluando…</div>';
       const { prompt, systemPrompt } = buildCoachPrompt({
         step: 3,
         field: 'objetivo_especifico',

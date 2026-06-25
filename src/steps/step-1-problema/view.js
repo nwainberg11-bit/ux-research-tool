@@ -5,7 +5,7 @@ import schema from './schema.js';
 import { renderField, bindFields, escapeHtml } from '../../ui/fields.js';
 import { callCoach } from '../../coach/client.js';
 import { buildCoachPrompt } from '../../coach/prompts.js';
-import { trackEvent } from '../../analytics/track.js';
+import { trackEvent, getCoachUseCount, incrementCoachUseCount, COACH_USE_LIMIT } from '../../analytics/track.js';
 
 export const meta = schema;
 
@@ -29,6 +29,13 @@ function autoParagraph(d) {
   if (d.que_provoca) partes.push('Esto provoca ' + lowerFirst(d.que_provoca.trim()));
   if (d.evidencia) partes.push('Evidencia: ' + d.evidencia.trim());
   return partes.join('. ').replace(/\.\.+/g, '.');
+}
+
+function coachHintText(count) {
+  const remaining = COACH_USE_LIMIT - count;
+  if (remaining <= 0) return 'Límite de evaluaciones alcanzado para esta sesión.';
+  if (remaining < COACH_USE_LIMIT) return `${remaining} evaluación${remaining === 1 ? '' : 'es'} restante${remaining === 1 ? '' : 's'}.`;
+  return '';
 }
 
 export function render(data) {
@@ -57,7 +64,9 @@ export function render(data) {
       <textarea id="f-paragraph" rows="5" data-field="paragraph">${escapeHtml(paragraph || '')}</textarea>
       ${data.paragraph_manual_edit ? '<small class="hint">Editado manualmente · no se sobrescribe.</small>' : ''}
       <div class="objective-meta">
-        <button class="coach-btn small" id="eval-paragraph-btn">Evaluar con coach</button>
+        <button class="coach-btn small" id="eval-paragraph-btn"
+          ${getCoachUseCount(1, 'paragraph') >= COACH_USE_LIMIT ? 'disabled' : ''}>Evaluar con coach</button>
+        <small class="hint" id="coach-paragraph-hint">${coachHintText(getCoachUseCount(1, 'paragraph'))}</small>
       </div>
       <div class="coach-panel" id="coach-paragraph-panel" hidden></div>
     </section>`;
@@ -82,8 +91,14 @@ export function bind(host, ctx) {
         coachPanel.innerHTML = '<div class="coach-honest">El párrafo está vacío.</div>';
         return;
       }
-      coachPanel.innerHTML = '<div class="coach-loading">Evaluando…</div>';
+      const newCount = incrementCoachUseCount(1, 'paragraph');
       trackEvent('coach_eval', { step: 1, field: 'paragraph' });
+      const hintEl = host.querySelector('#coach-paragraph-hint');
+      if (newCount >= COACH_USE_LIMIT) {
+        evalBtn.disabled = true;
+      }
+      if (hintEl) hintEl.textContent = coachHintText(newCount);
+      coachPanel.innerHTML = '<div class="coach-loading">Evaluando…</div>';
       const { prompt, systemPrompt } = buildCoachPrompt({
         step: 1,
         field: 'paragraph',
