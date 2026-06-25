@@ -26,6 +26,12 @@ FORMATO DE SALIDA — JSON estricto, sin texto fuera del JSON:
 
 const STEP_RULES = {
   1: {
+    paragraph: `Criterios del paso 1 ("definir el problema") · párrafo integrado:
+- Debe articular los cuatro elementos: quién sufre el problema, qué le sucede (y cuándo/dónde), por qué ocurre, qué provoca como consecuencia.
+- Sin redundancia: si el mismo dato aparece dos veces con distinto fraseo → "mejorable".
+- Objetivo y concreto: sin juicios de valor, sin adjetivos de opinión.
+- Cadena causal clara: la consecuencia debe leerse como derivada de la causa.
+- Si falta uno de los cuatro elementos → "no_cumple" e indicar cuál falta.`,
     quien_que_donde: `Criterios del paso 1 ("definir el problema") · campo "quién/qué/dónde":
 - Describe una situación en conflicto.
 - Identifica quién sufre el problema (rol del usuario, no "el usuario" genérico si el contexto lo permite).

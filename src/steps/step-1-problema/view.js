@@ -3,6 +3,8 @@
 // editó manualmente; una vez editado, NO lo pisamos.
 import schema from './schema.js';
 import { renderField, bindFields, escapeHtml } from '../../ui/fields.js';
+import { callCoach } from '../../coach/client.js';
+import { buildCoachPrompt } from '../../coach/prompts.js';
 
 export const meta = schema;
 
@@ -53,6 +55,10 @@ export function render(data) {
       <p class="hint">Se arma automáticamente con tus campos. Editalo si querés (queda fijo cuando lo hagas).</p>
       <textarea id="f-paragraph" rows="5" data-field="paragraph">${escapeHtml(paragraph || '')}</textarea>
       ${data.paragraph_manual_edit ? '<small class="hint">Editado manualmente · no se sobrescribe.</small>' : ''}
+      <div class="objective-meta">
+        <button class="coach-btn small" id="eval-paragraph-btn">Evaluar con coach</button>
+      </div>
+      <div class="coach-panel" id="coach-paragraph-panel" hidden></div>
     </section>`;
 }
 
@@ -65,10 +71,37 @@ export function bind(host, ctx) {
       ctx.setValue('paragraph_manual_edit', true);
     });
   }
+  const evalBtn = host.querySelector('#eval-paragraph-btn');
+  const coachPanel = host.querySelector('#coach-paragraph-panel');
+  if (evalBtn && coachPanel) {
+    evalBtn.addEventListener('click', async () => {
+      const text = ctx.getValue('paragraph') || paraEl?.value || '';
+      coachPanel.hidden = false;
+      if (!text.trim()) {
+        coachPanel.innerHTML = '<div class="coach-honest">El párrafo está vacío.</div>';
+        return;
+      }
+      coachPanel.innerHTML = '<div class="coach-loading">Evaluando…</div>';
+      const { prompt, systemPrompt } = buildCoachPrompt({
+        step: 1,
+        field: 'paragraph',
+        value: text,
+        context: {
+          quien_que_donde: ctx.getValue('quien_que_donde'),
+          por_que: ctx.getValue('por_que'),
+          que_provoca: ctx.getValue('que_provoca'),
+          evidencia: ctx.getValue('evidencia'),
+        },
+      });
+      const res = await callCoach({ prompt, systemPrompt });
+      coachPanel.innerHTML = renderCoachPanel(res);
+    });
+  }
+
   // Auto-actualizar el párrafo mientras editás campos, mientras no lo hayas
   // tocado manualmente. NO re-renderiza la página (no perdés foco).
   const avisoEl = host.querySelector('[data-hipotesis-aviso]');
-  host.querySelectorAll('[data-field]').forEach((el) => {
+  host.querySelectorAll('[data-field]:not(#f-paragraph)').forEach((el) => {
     const evt = el.type === 'checkbox' || el.type === 'radio' ? 'change' : 'input';
     el.addEventListener(evt, () => {
       const d = { ...(ctx.getContext()['paso_1'] || {}) };
@@ -83,4 +116,18 @@ export function bind(host, ctx) {
       }
     });
   });
+}
+
+function renderCoachPanel(res) {
+  if (res.status === 'unavailable') {
+    return `<div class="coach-honest">${escapeHtml(res.message)}</div>`;
+  }
+  const statusLabel = { ok: 'OK', mejorable: 'Mejorable', no_cumple: 'No cumple' }[res.status];
+  const parts = [];
+  if (res.diagnostico) parts.push(`<p><strong>Diagnóstico.</strong> ${escapeHtml(res.diagnostico)}</p>`);
+  if (res.que_falta) parts.push(`<p><strong>Qué falta.</strong> ${escapeHtml(res.que_falta)}</p>`);
+  if (res.pregunta_socratica) parts.push(`<p class="socratic">↳ ${escapeHtml(res.pregunta_socratica)}</p>`);
+  if (res.ejemplo) parts.push(`<p class="coach-example"><em>Ejemplo ilustrativo (adaptalo, no lo copies):</em> ${escapeHtml(res.ejemplo)}</p>`);
+  return `<div class="coach-result status-${res.status}">
+    <div class="coach-status">${statusLabel}</div>${parts.join('')}</div>`;
 }
