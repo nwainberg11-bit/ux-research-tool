@@ -17,6 +17,17 @@ export function getSessionId() {
   }
 }
 
+export function trackSessionStart() {
+  try {
+    const existing = localStorage.getItem(SESSION_KEY);
+    const type = existing ? 'session_resume' : 'session_new';
+    getSessionId(); // crea el ID si no existía
+    trackEvent(type);
+  } catch {
+    /* nunca romper el flujo */
+  }
+}
+
 export function trackEvent(type, extra = {}) {
   try {
     const body = JSON.stringify({

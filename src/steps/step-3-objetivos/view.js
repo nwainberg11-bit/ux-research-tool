@@ -6,6 +6,7 @@ import { renderField, bindFields, escapeHtml } from '../../ui/fields.js';
 import { checkBloomVerb } from '../../coach/validators/bloom-verb.js';
 import { callCoach } from '../../coach/client.js';
 import { buildCoachPrompt } from '../../coach/prompts.js';
+import { trackEvent } from '../../analytics/track.js';
 
 export const meta = schema;
 
@@ -112,6 +113,7 @@ export function bind(host, ctx) {
         return;
       }
       panel.innerHTML = '<div class="coach-loading">Evaluando…</div>';
+      trackEvent('coach_eval', { step: 3, field: 'objetivo_especifico', idx });
       const { prompt, systemPrompt } = buildCoachPrompt({
         step: 3,
         field: 'objetivo_especifico',

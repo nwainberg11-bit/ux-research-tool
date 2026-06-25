@@ -4,7 +4,7 @@ import { PHASES, STEP_BY_N } from '../source/steps.js';
 import { schemas, views } from '../steps/index.js';
 import { getState, goToStep, setStepData, subscribe, resetAll } from '../state/store.js';
 import { goPrev, goNext, prevKey, nextKey } from './nav.js';
-import { trackEvent } from '../analytics/track.js';
+import { trackEvent, trackSessionStart } from '../analytics/track.js';
 
 function renderSidebar(current) {
   return PHASES.map((ph) => {
@@ -85,6 +85,7 @@ function buildCtx(stepN, refresh, returnStep) {
 }
 
 export function mount(root) {
+  trackSessionStart();
   let lastRealStep = '1'; // último paso 1-8/brief visitado, para volver tras editar el brief inicial
 
   function render() {

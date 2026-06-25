@@ -37,11 +37,17 @@ function renderFunnel(funnelCounts, totalSessions) {
 
 function renderCards(data) {
   const conversion = pct(data.briefSent, data.totalSessions);
+  const returnRate = pct(data.sessionReturns || 0, data.totalSessions);
+  const coachTotal = data.coachEvals?.total || 0;
   return `
     <div class="panel-cards">
       <div class="panel-card">
         <div class="panel-card-value">${data.totalSessions}</div>
         <div class="panel-card-label">Sesiones totales</div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-card-value">${returnRate}%</div>
+        <div class="panel-card-label">Volvieron a la sesión</div>
       </div>
       <div class="panel-card">
         <div class="panel-card-value">${data.briefSent}</div>
@@ -55,7 +61,30 @@ function renderCards(data) {
         <div class="panel-card-value">${data.leadsCollected}</div>
         <div class="panel-card-label">Mails recolectados</div>
       </div>
+      <div class="panel-card">
+        <div class="panel-card-value">${coachTotal}</div>
+        <div class="panel-card-label">Evaluaciones con coach</div>
+      </div>
     </div>`;
+}
+
+function renderCoachStats(coachEvals) {
+  if (!coachEvals?.byStep) return '';
+  const rows = Object.entries(coachEvals.byStep)
+    .sort((a, b) => Number(a[0]) - Number(b[0]))
+    .map(([step, count]) => `
+      <div class="funnel-row">
+        <div class="funnel-label">Paso ${step}</div>
+        <div class="funnel-bar-track">
+          <div class="funnel-bar" style="width:${pct(count, coachEvals.total)}%"></div>
+        </div>
+        <div class="funnel-count">${count}</div>
+        <div class="funnel-dropoff"></div>
+      </div>`)
+    .join('');
+  return `
+    <h2 style="margin-top:2rem">Uso del coach por paso</h2>
+    <div class="funnel">${rows}</div>`;
 }
 
 async function fetchMetrics() {
@@ -81,7 +110,8 @@ export function mount(root) {
       body.innerHTML = `
         ${data.mock ? '<p class="panel-mock-notice">Datos de ejemplo — todavía no está conectada la fuente real.</p>' : ''}
         ${renderCards(data)}
-        ${renderFunnel(data.funnel, data.totalSessions)}`;
+        ${renderFunnel(data.funnel, data.totalSessions)}
+        ${renderCoachStats(data.coachEvals)}`;
     })
     .catch(() => {
       body.className = 'panel-error';

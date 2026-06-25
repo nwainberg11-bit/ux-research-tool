@@ -5,6 +5,7 @@ import schema from './schema.js';
 import { renderField, bindFields, escapeHtml } from '../../ui/fields.js';
 import { callCoach } from '../../coach/client.js';
 import { buildCoachPrompt } from '../../coach/prompts.js';
+import { trackEvent } from '../../analytics/track.js';
 
 export const meta = schema;
 
@@ -82,6 +83,7 @@ export function bind(host, ctx) {
         return;
       }
       coachPanel.innerHTML = '<div class="coach-loading">Evaluando…</div>';
+      trackEvent('coach_eval', { step: 1, field: 'paragraph' });
       const { prompt, systemPrompt } = buildCoachPrompt({
         step: 1,
         field: 'paragraph',

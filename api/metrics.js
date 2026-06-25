@@ -8,8 +8,13 @@
 const MOCK_METRICS = {
   mock: true,
   totalSessions: 42,
+  sessionReturns: 12,
   briefSent: 11,
   leadsCollected: 11,
+  coachEvals: {
+    total: 23,
+    byStep: { 1: 8, 3: 15 }
+  },
   funnel: {
     intro: 42,
     1: 38,
