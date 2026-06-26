@@ -104,7 +104,7 @@ export function mount(root) {
           <span class="brand">UX Coach</span>
         </header>
         <aside class="sidebar">
-          <a href="https://nicowainberg.netlify.app" class="back-to-portfolio">
+          <a href="https://nicowainberg.com" class="back-to-portfolio">
             <span class="back-arrow">←</span>
             <span class="back-text"><strong>Nico Wainberg</strong><small>UX Coach Ontológico</small></span>
           </a>
