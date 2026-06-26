@@ -87,6 +87,7 @@ export function render() {
 
     <section class="brief-doc">
       <h2>Fase 1 · El problema</h2>
+      <p class="hint">Responde: ¿quién tiene el problema, dónde ocurre, qué pasa y en qué afecta?</p>
       ${brief.problema.paragraph
         ? `<p class="lead">${escapeHtml(brief.problema.paragraph)}</p>`
         : '<p class="muted">Sin párrafo integrado.</p>'}
