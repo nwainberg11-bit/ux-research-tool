@@ -168,7 +168,8 @@ export function bind(host) {
     msg.hidden = true;
 
     const { briefToPdf } = await import('../../brief/export-pdf.js');
-    const pdfBlob = briefToPdf(assembleBrief(getState()));
+    const briefDocEl = host.querySelector('.brief-doc');
+    const pdfBlob = await briefToPdf(briefDocEl);
     const pdfBase64 = await blobToBase64(pdfBlob);
     const { ok } = await sendBriefByMail({ email, pdfBase64, sessionId: getSessionId() });
 
