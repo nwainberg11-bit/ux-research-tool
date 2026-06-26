@@ -9,7 +9,8 @@ const MAX_PDF_BASE64_CHARS = 2_000_000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 30;
 
-const FROM_ADDRESS = 'UX Research Coach <coach@nicowainberg.com>';
+const FROM_ADDRESS = 'UX Research Coach <uxrcoach@nicowainberg.com>';
+const REPLY_TO    = 'ux.nicowainberg@gmail.com';
 
 export const config = {
   api: { bodyParser: { sizeLimit: '3mb' } }
@@ -80,6 +81,7 @@ export default async function handler(req, res) {
       const { error } = await resend.emails.send({
         from: FROM_ADDRESS,
         to: body.email.trim(),
+        replyTo: REPLY_TO,
         subject: 'Tu brief de investigación UX',
         text:
           '¡Gracias por usar el UX Research Coach!\n\n' +
