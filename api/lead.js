@@ -1,18 +1,15 @@
 // Vercel Serverless Function — api/lead.js
-// Proxy entre el frontend y el webhook de Apps Script (envío de mail + Sheet de leads/eventos).
-// La URL del webhook vive en Vercel env vars — nunca llega al cliente.
-// Mismo patrón de endurecimiento que api/coach.js: rate-limit + validación de input.
-//
-// PAUSADO (2026-06-19): Google bloquea las llamadas servidor-a-servidor desde
-// IPs de datacenter (Vercel/AWS) hacia script.google.com/.../exec con un 404 —
-// no es un bug de este código, es un bloqueo del lado de Google. Mientras no
-// se resuelva (alternativa: Resend + Google Sheets API con cuenta de servicio),
-// este endpoint no funciona en producción. No exponer la URL al cliente como
-// workaround — fue evaluado y descartado por riesgo de abuso del mail.
+// send_brief: envía el brief por mail via Resend (coach@nicowainberg.com).
+// event: loguea eventos de uso — por ahora no-op, pendiente conectar analytics.
+// Rate-limit + validación de input igual que api/coach.js.
 
-const MAX_PDF_BASE64_CHARS = 2_000_000; // ~1.5MB de PDF, de sobra para un brief de texto
+import { Resend } from 'resend';
+
+const MAX_PDF_BASE64_CHARS = 2_000_000;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 30;
+
+const FROM_ADDRESS = 'UX Research Coach <coach@nicowainberg.com>';
 
 export const config = {
   api: { bodyParser: { sizeLimit: '3mb' } }
@@ -53,11 +50,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const webhookUrl = process.env.APPS_SCRIPT_WEBHOOK_URL;
-  if (!webhookUrl) {
-    return res.status(500).json({ error: 'Webhook no configurado' });
-  }
-
   const ip = getClientIp(req);
   const rl = checkRateLimit(ip);
   if (!rl.ok) {
@@ -77,30 +69,46 @@ export default async function handler(req, res) {
     if (body.pdfBase64.length > MAX_PDF_BASE64_CHARS) {
       return res.status(400).json({ error: 'El PDF es demasiado pesado' });
     }
-  } else if (body.action === 'event') {
-    if (typeof body.type !== 'string' || !body.type.trim()) {
-      return res.status(400).json({ error: 'Falta type' });
+
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'Servicio de mail no configurado' });
     }
+
+    try {
+      const resend = new Resend(apiKey);
+      const { error } = await resend.emails.send({
+        from: FROM_ADDRESS,
+        to: body.email.trim(),
+        subject: 'Tu brief de investigación UX',
+        text:
+          '¡Gracias por usar el UX Research Coach!\n\n' +
+          'Te dejamos adjunto el brief que armaste, listo para compartir con tu equipo ' +
+          'o llevar a la ejecución del test.\n\n' +
+          'Si te sirvió, contanos qué te pareció — cualquier feedback ayuda a mejorar la herramienta.\n\n' +
+          '— UX Research Coach',
+        attachments: [
+          {
+            filename: 'brief-ux-research.pdf',
+            content: Buffer.from(body.pdfBase64, 'base64')
+          }
+        ]
+      });
+      if (error) {
+        console.error('Resend error:', error);
+        return res.status(502).json({ ok: false });
+      }
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error('send_brief error:', err);
+      return res.status(502).json({ ok: false });
+    }
+
+  } else if (body.action === 'event') {
+    // Analytics pendiente — se recibe pero no se persiste por ahora
+    return res.status(200).json({ ok: true });
+
   } else {
     return res.status(400).json({ error: 'Acción inválida' });
-  }
-
-  try {
-    // Apps Script /exec responde con un 302 a script.googleusercontent.com que
-    // solo acepta GET — seguimos el redirect a mano en vez de dejar que fetch
-    // lo siga automático. Aun así, Google devuelve 404 en el primer salto
-    // cuando la llamada sale de una IP de datacenter (ver nota arriba).
-    let r = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-      redirect: 'manual'
-    });
-    if (r.status >= 300 && r.status < 400 && r.headers.get('location')) {
-      r = await fetch(r.headers.get('location'));
-    }
-    return res.status(r.ok ? 200 : 502).json({ ok: r.ok });
-  } catch {
-    return res.status(502).json({ ok: false, error: 'No se pudo contactar el webhook' });
   }
 }
