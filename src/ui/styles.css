@@ -755,9 +755,10 @@ table.compare td { color: var(--text-2); }
   font-style: italic;
 }
 .brief-doc .lead {
-  font-family: var(--font-display);
-  font-size: 1.05rem; font-style: italic;
-  color: var(--text-1); line-height: 1.6;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text-1);
+  line-height: 1.7;
 }
 .brief-doc .brief-list { padding-left: 22px; margin: 6px 0 14px; color: var(--text-2); }
 .brief-doc .brief-list li { margin: 4px 0; }
