@@ -92,7 +92,7 @@ function completeness({ p1, p2, p3, p4, objectives, p8 }) {
     ['paso_2.out_scope', !!trim(p2.out_scope)],
     ['paso_3.objetivo_general', !!trim(p3.objetivo_general)],
     ['paso_3.objetivos_especificos', objectives.length >= 1],
-    ['paso_4.tipo', !!p4.tipo],
+    ['paso_4.tipo', !!TEST_TYPE_BY_ID[p4.tipo]],
     ['paso_4.justificacion', !!trim(p4.justificacion)],
     // Si no hay objetivos cargados, estos chequeos no se dan por cumplidos
     // (el .every() vacuamente true sobre arr vacío sería deshonesto).
